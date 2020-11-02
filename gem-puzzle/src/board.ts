@@ -1,5 +1,5 @@
 const createBoard = () => {
-  console.log('BO!');
+  return 'hello!'
 };
 
 export default createBoard;
