@@ -1,14 +1,23 @@
-import board from './board';
+import {createBoard, history, swap} from './board';
 
-function component() {
-  const element = document.createElement('div');
+
+
+(function() {
+  const element:any = document.createElement('div');
   element.classList.add('board');
 
   
-  element.innerHTML = board();
+  element.innerHTML = createBoard();
 
+  console.table(history);
 
-  return element;
-}
+  document.body.appendChild(element);
+})();
 
-document.body.appendChild(component());
+document.querySelectorAll('.cell').forEach(cell =>{
+  cell.addEventListener('mousedown', (evt) => {
+    const elem = <HTMLElement>evt.target;
+
+    swap(elem.innerHTML);
+  });
+})

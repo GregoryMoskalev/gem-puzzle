@@ -29,6 +29,12 @@ body {
   background-color: orange;
 }
 
+.empty {
+  margin: 2px;
+  width: 100px;
+  height: 100px;
+}
+
 #cell-0 {
   background-color: transparent;
   color: transparent;
