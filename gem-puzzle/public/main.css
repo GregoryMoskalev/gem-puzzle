@@ -19,6 +19,7 @@ body {
 }
 
 .cell {
+  user-select: none;
   margin: 2px;
   width: 100px;
   height: 100px;
@@ -27,9 +28,11 @@ body {
   justify-content: center;
   align-items: center;
   background-color: orange;
+  transition: all 5s;
 }
 
 .empty {
+  user-select: none;
   margin: 2px;
   width: 100px;
   height: 100px;
