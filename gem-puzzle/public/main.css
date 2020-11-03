@@ -28,7 +28,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: orange;
-  transition: all 5s;
+  /* transition: all 5s; */
 }
 
 .empty {

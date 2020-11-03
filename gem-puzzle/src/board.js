@@ -1,149 +1,156 @@
-const history = [];
-// let size = 4;
-let emptyX;
-let emptyY;
-let arr = [];
-
-function move(direction) {
-  switch (direction) {
-    case 'up':
-      arr[emptyX][emptyY] = arr[emptyX - 1][emptyY];
-      arr[emptyX - 1][emptyY] = 0;
-      emptyX -= 1;
-      break;
-    case 'down':
-      arr[emptyX][emptyY] = arr[emptyX + 1][emptyY];
-      arr[emptyX + 1][emptyY] = 0;
-      emptyX += 1;
-      break;
-    case 'right':
-      arr[emptyX][emptyY] = arr[emptyX][emptyY + 1];
-      arr[emptyX][emptyY + 1] = 0;
-      emptyY += 1;
-      break;
-    case 'left':
-      arr[emptyX][emptyY] = arr[emptyX][emptyY - 1];
-      arr[emptyX][emptyY - 1] = 0;
-      emptyY -= 1;
-      break;
-    default:
-      throw new Error('>:(');
+export default class Board {
+  constructor() {
+    this.history = [];
+    this.size = 4;
+    this.emptyX = this.size - 1;
+    this.emptyY = this.size - 1;
+    this.arr = [];
   }
-}
 
-function shuffle(size = 4) {
-  emptyX = size - 1;
-  emptyY = size - 1;
-  history.push([ emptyX, emptyY ]);
+  // let size = 4;
 
-  for (let i = 0; i < 80; i += 1) {
-    switch (Math.floor(4 * Math.random())) {
-      case 0:
-        if (emptyX !== 0) {
-          //  MOVE UP
-
-          move('up');
-        } else {
-          //  MOVE DOWN
-          move('down');
-        }
-        history.push([ emptyX, emptyY ]);
+  move(direction) {
+    switch (direction) {
+      case 'up':
+        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
+        this.arr[this.emptyX - 1][this.emptyY] = 0;
+        this.emptyX -= 1;
         break;
-      case 1:
-        if (emptyY !== size - 1) {
-          //  MOVE RIGHT
-          move('right');
-        } else {
-          //  MOVE LEFT
-          move('left');
-        }
-        history.push([ emptyX, emptyY ]);
+      case 'down':
+        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX + 1][this.emptyY];
+        this.arr[this.emptyX + 1][this.emptyY] = 0;
+        this.emptyX += 1;
         break;
-      case 2:
-        if (emptyX !== size - 1) {
-          //  MOVE DOWN
-          move('down');
-        } else {
-          //  MOVE UP
-          move('up');
-        }
-        history.push([ emptyX, emptyY ]);
+      case 'right':
+        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY + 1];
+        this.arr[this.emptyX][this.emptyY + 1] = 0;
+        this.emptyY += 1;
         break;
-      case 3:
-        if (emptyY !== 0) {
-          //  MOVE LEFT
-          move('left');
-        } else {
-          //  MOVE RIGHT
-          move('right');
-          history.push([ emptyX, emptyY ]);
-        }
+      case 'left':
+        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY - 1];
+        this.arr[this.emptyX][this.emptyY - 1] = 0;
+        this.emptyY -= 1;
         break;
       default:
-        i -= 1;
         throw new Error('>:(');
     }
   }
 
-  return arr;
-}
+  shuffle() {
+    // this.emptyX = size - 1;
+    // this.emptyY = size - 1;
+    this.history.push([ this.emptyX, this.emptyY ]);
 
-function renderBoard(size = 4) {
-  let board = '';
-  let cellNumber;
+    for (let i = 0; i < 80; i += 1) {
+      switch (Math.floor(4 * Math.random())) {
+        case 0:
+          if (this.emptyX !== 0) {
+            //  MOVE UP
 
-  for (let i = 0, order = 1; i < size; i += 1) {
-    for (let j = 0; j < size; j += 1) {
-      cellNumber = arr[i][j];
-      const className = arr[i][j] ? 'cell' : 'empty';
-      order += 1;
-      board += `<div style='order:${order};' id='cell-${cellNumber}' class='${className}'>${cellNumber}</div>`;
-    }
-  }
-
-  return board;
-}
-
-function createBoard(size = 4) {
-  for (let i = 0; i < size; i += 1) {
-    arr[i] = [];
-    for (let j = 0; j < size; j += 1) {
-      if (i + j !== (size - 1) * 2) {
-        arr[i][j] = i * size + j + 1;
-      } else {
-        arr[i][j] = 0;
+            this.move('up');
+          } else {
+            //  MOVE DOWN
+            this.move('down');
+          }
+          this.history.push([ this.emptyX, this.emptyY ]);
+          break;
+        case 1:
+          if (this.emptyY !== this.size - 1) {
+            //  MOVE RIGHT
+            this.move('right');
+          } else {
+            //  MOVE LEFT
+            this.move('left');
+          }
+          this.history.push([ this.emptyX, this.emptyY ]);
+          break;
+        case 2:
+          if (this.emptyX !== this.size - 1) {
+            //  MOVE DOWN
+            this.move('down');
+          } else {
+            //  MOVE UP
+            this.move('up');
+          }
+          this.history.push([ this.emptyX, this.emptyY ]);
+          break;
+        case 3:
+          if (this.emptyY !== 0) {
+            //  MOVE LEFT
+            this.move('left');
+          } else {
+            //  MOVE RIGHT
+            this.move('right');
+            this.history.push([ this.emptyX, this.emptyY ]);
+          }
+          break;
+        default:
+          i -= 1;
+          throw new Error('>:(');
       }
     }
+
+    return this.arr;
   }
 
-  arr = shuffle();
-  console.log(arr);
+  renderBoard() {
+    let board = '';
+    let cellNumber;
 
-  return renderBoard();
-}
+    for (let i = 0, order = 1; i < this.size; i += 1) {
+      for (let j = 0; j < this.size; j += 1) {
+        cellNumber = this.arr[i][j];
+        const className = this.arr[i][j] ? 'cell' : 'empty';
+        order += 1;
+        board += `<div style='order:${order};' id='cell-${cellNumber}' class='${className}'>${cellNumber}</div>`;
+      }
+    }
 
-function swap(number) {
-  for (let i = 0; i < arr.length; i += 1) {
-    for (let j = 0; j < arr[i].length; j += 1) {
-      if (arr[i][j] === number) {
-        if (
-          (Math.abs(emptyX - i) <= 1 && emptyY - j === 0) ||
-          (Math.abs(emptyY - j) <= 1 && emptyX - i === 0)
-        ) {
-          const zero = document.querySelector(`#cell-${arr[emptyX][emptyY]}`);
-          const e = document.querySelector(`#cell-${arr[i][j]}`);
-          const temp = zero.style.order;
-          zero.style.order = e.style.order;
-          e.style.order = temp;
+    return board;
+  }
 
-          [ arr[i][j], arr[emptyX][emptyY] ] = [ arr[emptyX][emptyY], arr[i][j] ];
-          emptyX = i;
-          emptyY = j;
-          return;
+  createBoard() {
+    for (let i = 0; i < this.size; i += 1) {
+      this.arr[i] = [];
+      for (let j = 0; j < this.size; j += 1) {
+        if (i + j !== (this.size - 1) * 2) {
+          this.arr[i][j] = i * this.size + j + 1;
+        } else {
+          this.arr[i][j] = 0;
+        }
+      }
+    }
+
+    this.arr = this.shuffle();
+    console.table(this.arr);
+    return this.renderBoard();
+  }
+
+  swap(number) {
+    for (let i = 0; i < this.arr.length; i += 1) {
+      for (let j = 0; j < this.arr[i].length; j += 1) {
+        if (this.arr[i][j] === number) {
+          if (
+            (Math.abs(this.emptyX - i) <= 1 && this.emptyY - j === 0) ||
+            (Math.abs(this.emptyY - j) <= 1 && this.emptyX - i === 0)
+          ) {
+            const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
+            const e = document.querySelector(`#cell-${this.arr[i][j]}`);
+            const temp = zero.style.order;
+            zero.style.order = e.style.order;
+            e.style.order = temp;
+
+            [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
+              this.arr[this.emptyX][this.emptyY],
+              this.arr[i][j]
+            ];
+            this.emptyX = i;
+            this.emptyY = j;
+            console.table(this.arr);
+            return;
+          }
         }
       }
     }
   }
 }
-
-export { createBoard, history, swap };
