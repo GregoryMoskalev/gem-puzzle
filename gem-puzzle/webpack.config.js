@@ -18,5 +18,13 @@ module.exports = {
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'public')
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'public'),
+    compress: true,
+    port: 3000,
+    overlay: true,
+    stats: 'errors-only',
+    clientLogLevel: 'none'
   }
 };

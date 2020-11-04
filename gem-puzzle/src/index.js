@@ -17,8 +17,5 @@ document.body.appendChild(header);
 board.init();
 
 document.querySelector('.new-game').addEventListener('click', () => {
-
   board.init();
 });
-
-

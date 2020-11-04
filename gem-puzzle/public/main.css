@@ -12,8 +12,9 @@ body {
   background-color: brown;
 
   padding: 2px;
+  /* width: 832px; */
   width: 416px;
-  height: 416px;
+
   /* grid-template-columns: repeat(4, 1fr);
   grid-auto-rows: 1fr; */
 }
@@ -28,17 +29,16 @@ body {
   justify-content: center;
   align-items: center;
   background-color: orange;
-  /* transition: all 5s; */
 }
 
 .empty {
-  user-select: none;
-  margin: 2px;
-  width: 100px;
-  height: 100px;
-}
-
-#cell-0 {
   background-color: transparent;
   color: transparent;
 }
+
+.selected {
+  background-color: orangered;
+}
+
+/* #cell-0 {
+} */

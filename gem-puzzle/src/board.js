@@ -6,7 +6,8 @@ export default class Board {
     this.emptyY = 0;
     this.arr = [];
     this.movesCounter = null;
-
+    this.animationTime = 300;
+    this.cellSize = 104;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
         document.body.removeChild(elem);
@@ -48,7 +49,7 @@ export default class Board {
     // this.emptyY = size - 1;
     this.history.push([ this.emptyX, this.emptyY ]);
 
-    for (let i = 0; i < 80; i += 1) {
+    for (let i = 0; i < this.size ** 3; i += 1) {
       switch (Math.floor(4 * Math.random())) {
         case 0:
           if (this.emptyX !== 0) {
@@ -108,9 +109,10 @@ export default class Board {
     for (let i = 0, order = 1; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
         cellNumber = this.arr[i][j];
-        const className = this.arr[i][j] ? 'cell' : 'empty';
+        const className = this.arr[i][j] ? 'cell' : 'cell empty';
+        const draggable = !!this.arr[i][j];
         order += 1;
-        board += `<div style='order:${order};' id='cell-${cellNumber}' class='${className}'>${cellNumber}</div>`;
+        board += `<div style='order:${order};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
       }
     }
 
@@ -137,6 +139,42 @@ export default class Board {
     }
   }
 
+  draw() {
+    const pxPerTick = this.cellSize / this.animationTime * this.timePassed;
+    switch (this.direction) {
+      case 'up':
+        this.e.style.transform = `translate( 0, ${-pxPerTick}px)`;
+        break;
+      case 'down':
+        this.e.style.transform = `translate( 0, ${pxPerTick}px)`;
+        break;
+      case 'left':
+        this.e.style.transform = `translate( ${-pxPerTick}px, 0)`;
+        break;
+      case 'right':
+        this.e.style.transform = `translate( ${pxPerTick}px, 0)`;
+        break;
+      default:
+        throw new Error('>:(');
+    }
+  }
+
+  moveAnimation() {
+    this.start = Date.now();
+
+    this.timer = setInterval(() => {
+      this.timePassed = Date.now() - this.start;
+
+      if (this.timePassed >= this.animationTime) {
+        clearInterval(this.timer); // закончить анимацию через 2 секунды
+        return;
+      }
+
+      // отрисовать анимацию на момент timePassed, прошедший с начала анимации
+      this.draw();
+    }, 20);
+  }
+
   swap(number) {
     for (let i = 0; i < this.arr.length; i += 1) {
       for (let j = 0; j < this.arr[i].length; j += 1) {
@@ -150,11 +188,33 @@ export default class Board {
             document.querySelector('.move').innerHTML = this.movesCounter;
 
             const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
-            const e = document.querySelector(`#cell-${this.arr[i][j]}`);
+            this.e = document.querySelector(`#cell-${this.arr[i][j]}`);
 
-            const temp = zero.style.order;
-            zero.style.order = e.style.order;
-            e.style.order = temp;
+            //  find where are we moving
+            if (this.emptyX - i < 0) {
+              console.log('up!');
+              this.direction = 'up';
+              this.moveAnimation();
+            } else if (this.emptyX - i > 0) {
+              this.direction = 'down';
+              this.moveAnimation();
+            } else if (this.emptyY - j < 0) {
+              this.direction = 'left';
+              this.moveAnimation();
+              console.log('left');
+            } else if (this.emptyY - j > 0) {
+              this.direction = 'right';
+              this.moveAnimation();
+              console.log('right');
+            }
+
+            setTimeout(() => {
+              const temp = zero.style.order;
+              zero.style.order = this.e.style.order;
+              this.e.style.order = temp;
+
+              this.e.style.transform = '';
+            }, this.animationTime);
 
             [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
               this.arr[this.emptyX][this.emptyY],
@@ -179,10 +239,18 @@ export default class Board {
     console.table(this.arr);
 
     document.querySelectorAll('.cell').forEach((cell) => {
-      cell.addEventListener('mousedown', (evt) => {
+      cell.addEventListener('mouseup', (evt) => {
         const elem = evt.target;
         this.swap(parseInt(elem.innerHTML, 10));
       });
+
+      cell.addEventListener('dragstart', this.dragStart);
+
+      cell.addEventListener('dragover', this.dragOver);
+
+      cell.addEventListener('drop', this.dragDrop);
+
+      cell.addEventListener('dragend', this.dragEnd);
     });
   }
 }
