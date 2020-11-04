@@ -6,7 +6,7 @@ export default class Board {
     this.emptyY = 0;
     this.arr = [];
     this.movesCounter = null;
-    this.animationTime = 300;
+    this.animationTime = 400;
     this.cellSize = 104;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
@@ -160,22 +160,25 @@ export default class Board {
   }
 
   moveAnimation() {
+    this.inAnimation = true;
     this.start = Date.now();
 
     this.timer = setInterval(() => {
       this.timePassed = Date.now() - this.start;
 
       if (this.timePassed >= this.animationTime) {
-        clearInterval(this.timer); // закончить анимацию через 2 секунды
+        clearInterval(this.timer);
+        this.inAnimation = false;
         return;
       }
 
-      // отрисовать анимацию на момент timePassed, прошедший с начала анимации
       this.draw();
     }, 20);
   }
 
   swap(number) {
+    if (this.inAnimation) return;
+
     for (let i = 0; i < this.arr.length; i += 1) {
       for (let j = 0; j < this.arr[i].length; j += 1) {
         if (this.arr[i][j] === number) {
