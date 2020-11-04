@@ -1,16 +1,24 @@
 import Board from './board.js';
+// import Timer from './timer.js';
 
 const board = new Board();
-const element = document.createElement('div');
-element.classList.add('board');
 
-element.innerHTML = board.createBoard();
+const header = document.createElement('header');
 
-document.body.appendChild(element);
+header.innerHTML = `  
+<header class="header">
+  <button class="new-game">New game</button>
+  <div class="timer"><span>Timer:</span><span class="time">0</span></div>
+  <div class="moves"><span>Moves:</span><span class="move">0</span></div>
+</header>`;
 
-document.querySelectorAll('.cell').forEach((cell) => {
-  cell.addEventListener('mousedown', (evt) => {
-    const elem = evt.target;
-    board.swap(parseInt(elem.innerHTML, 10));
-  });
+document.body.appendChild(header);
+
+board.init();
+
+document.querySelector('.new-game').addEventListener('click', () => {
+
+  board.init();
 });
+
+

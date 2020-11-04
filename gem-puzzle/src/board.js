@@ -2,9 +2,16 @@ export default class Board {
   constructor() {
     this.history = [];
     this.size = 4;
-    this.emptyX = this.size - 1;
-    this.emptyY = this.size - 1;
+    this.emptyX = 0;
+    this.emptyY = 0;
     this.arr = [];
+    this.movesCounter = null;
+
+    this.removeBoard = () => {
+      document.querySelectorAll('.board').forEach((elem) => {
+        document.body.removeChild(elem);
+      });
+    };
   }
 
   // let size = 4;
@@ -89,11 +96,12 @@ export default class Board {
           throw new Error('>:(');
       }
     }
-
-    return this.arr;
   }
 
   renderBoard() {
+    this.movesCounter = 0;
+    document.querySelector('.move').innerHTML = this.movesCounter;
+
     let board = '';
     let cellNumber;
 
@@ -106,10 +114,17 @@ export default class Board {
       }
     }
 
-    return board;
+    const element = document.createElement('div');
+    element.classList.add('board');
+
+    element.innerHTML = board;
+
+    document.body.appendChild(element);
   }
 
   createBoard() {
+    this.emptyX = this.size - 1;
+    this.emptyY = this.size - 1;
     for (let i = 0; i < this.size; i += 1) {
       this.arr[i] = [];
       for (let j = 0; j < this.size; j += 1) {
@@ -120,10 +135,6 @@ export default class Board {
         }
       }
     }
-
-    this.arr = this.shuffle();
-    console.table(this.arr);
-    return this.renderBoard();
   }
 
   swap(number) {
@@ -134,8 +145,13 @@ export default class Board {
             (Math.abs(this.emptyX - i) <= 1 && this.emptyY - j === 0) ||
             (Math.abs(this.emptyY - j) <= 1 && this.emptyX - i === 0)
           ) {
+            // Move counter
+            this.movesCounter += 1;
+            document.querySelector('.move').innerHTML = this.movesCounter;
+
             const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
             const e = document.querySelector(`#cell-${this.arr[i][j]}`);
+
             const temp = zero.style.order;
             zero.style.order = e.style.order;
             e.style.order = temp;
@@ -152,5 +168,21 @@ export default class Board {
         }
       }
     }
+  }
+
+  init() {
+    this.removeBoard();
+    this.createBoard();
+    this.shuffle();
+    this.renderBoard();
+
+    console.table(this.arr);
+
+    document.querySelectorAll('.cell').forEach((cell) => {
+      cell.addEventListener('mousedown', (evt) => {
+        const elem = evt.target;
+        this.swap(parseInt(elem.innerHTML, 10));
+      });
+    });
   }
 }
