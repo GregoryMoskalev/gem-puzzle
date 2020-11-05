@@ -5,6 +5,13 @@ body {
   padding: 0;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .board {
   margin: auto;
   display: flex;
