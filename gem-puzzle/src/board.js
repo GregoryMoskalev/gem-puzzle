@@ -174,6 +174,33 @@ export default class Board {
     }, 20);
   }
 
+  checkWin() {
+    const win = [];
+    for (let i = 0; i < this.size; i += 1) {
+      win[i] = [];
+      for (let j = 0; j < this.size; j += 1) {
+        if (i + j !== (this.size - 1) * 2) {
+          win[i][j] = i * this.size + j + 1;
+        } else {
+          win[i][j] = 0;
+        }
+      }
+    }
+
+    console.log('check for win!', win, this.arr);
+
+    for (let i = 0; i < this.size; i += 1) {
+      for (let j = 0; j < this.size; j += 1) {
+        if (i + j !== (this.size - 1) * 2) {
+          if (win[i][j] !== this.arr[i][j]) return false;
+        }
+      }
+    }
+
+    console.log('win!', win, this.arr);
+    return true;
+  }
+
   swap(number) {
     if (this.inAnimation) return;
 
@@ -224,6 +251,15 @@ export default class Board {
             this.emptyX = i;
             this.emptyY = j;
             console.table(this.arr);
+
+            if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
+              if (this.checkWin()) {
+                document.querySelector(
+                  '.board'
+                ).innerHTML = `Ура! Вы решили головоломку за ${document.querySelector('.time')
+                  .innerHTML} и ${document.querySelector('.move').innerHTML} ходов`;
+              }
+            }
             return;
           }
         }
