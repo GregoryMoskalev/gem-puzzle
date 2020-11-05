@@ -31,36 +31,16 @@ export default class Timer {
 
   init() {
     this.timerStop();
-    this.currentTime = 0;
+    this.currentTime = null;
+    this.calcCurrentTime();
+  }
+
+  load() {
+    this.timerStop();
+    this.secToMinAndSec();
+    this.renderTimer();
+
     this.calcCurrentTime();
   }
 }
 
-// calcStartTime() {
-//   this.startDate = Date.now();
-//   console.log(this.startDate);
-// }
-
-// calcCurrentTime() {
-//   this.currentTime = Date.now() - this.startDate;
-//   console.log(this.currentTime);
-// }
-
-// initTimer() {
-//   this.calcStartTime();
-//   this.time();
-// }
-
-// msToMinAndSec() {
-//   this.minutes = Math.floor(this.currentTime / 60000);
-//   this.sec = ((this.currentTime % 60000) / 1000).toFixed(0);
-
-//   return `${this.minutes}:${this.sec < 10 ? '0' : ''}${this.sec}`;
-// }
-
-// time() {
-//   this.time = setInterval(() => {
-//     this.calcCurrentTime();
-//     console.log(this.msToMinAndSec());
-//   }, 500);
-// }

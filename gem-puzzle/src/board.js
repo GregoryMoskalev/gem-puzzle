@@ -4,10 +4,8 @@ export default class Board {
     this.size = 4;
     this.emptyX = 0;
     this.emptyY = 0;
-    this.arr = [];
-    this.movesCounter = null;
     this.animationTime = 400;
-    this.cellSize = 104;
+    this.cellSize = 10.4; //  rem with margin
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
         document.body.removeChild(elem);
@@ -45,8 +43,6 @@ export default class Board {
   }
 
   shuffle() {
-    // this.emptyX = size - 1;
-    // this.emptyY = size - 1;
     this.history.push([ this.emptyX, this.emptyY ]);
 
     for (let i = 0; i < this.size ** 3; i += 1) {
@@ -100,7 +96,6 @@ export default class Board {
   }
 
   renderBoard() {
-    this.movesCounter = 0;
     document.querySelector('.move').innerHTML = this.movesCounter;
 
     let board = '';
@@ -118,13 +113,16 @@ export default class Board {
 
     const element = document.createElement('div');
     element.classList.add('board');
-
+    element.style.width = `${this.cellSize * this.size}rem`;
     element.innerHTML = board;
 
     document.body.appendChild(element);
+
+    console.log(element.style.width, `${Math.floor(this.cellSize * this.size)}`);
   }
 
   createBoard() {
+    this.arr = [];
     this.emptyX = this.size - 1;
     this.emptyY = this.size - 1;
     for (let i = 0; i < this.size; i += 1) {
@@ -140,19 +138,19 @@ export default class Board {
   }
 
   draw() {
-    const pxPerTick = this.cellSize / this.animationTime * this.timePassed;
+    const remPerTick = this.cellSize / this.animationTime * this.timePassed;
     switch (this.direction) {
       case 'up':
-        this.e.style.transform = `translate( 0, ${-pxPerTick}px)`;
+        this.e.style.transform = `translate( 0, ${-remPerTick}rem)`;
         break;
       case 'down':
-        this.e.style.transform = `translate( 0, ${pxPerTick}px)`;
+        this.e.style.transform = `translate( 0, ${remPerTick}rem)`;
         break;
       case 'left':
-        this.e.style.transform = `translate( ${-pxPerTick}px, 0)`;
+        this.e.style.transform = `translate( ${-remPerTick}rem, 0)`;
         break;
       case 'right':
-        this.e.style.transform = `translate( ${pxPerTick}px, 0)`;
+        this.e.style.transform = `translate( ${remPerTick}rem, 0)`;
         break;
       default:
         throw new Error('>:(');
@@ -233,10 +231,37 @@ export default class Board {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
+
   init() {
+    this.size = document.getElementById('fieldSize').value;
     this.removeBoard();
     this.createBoard();
     this.shuffle();
+    this.movesCounter = 0;
+    this.renderBoard();
+
+    console.table(this.arr);
+
+    document.querySelectorAll('.cell').forEach((cell) => {
+      cell.addEventListener('mouseup', (evt) => {
+        const elem = evt.target;
+        this.swap(parseInt(elem.innerHTML, 10));
+      });
+
+      cell.addEventListener('dragstart', this.dragStart);
+
+      cell.addEventListener('dragover', this.dragOver);
+
+      cell.addEventListener('drop', this.dragDrop);
+
+      cell.addEventListener('dragend', this.dragEnd);
+    });
+  }
+
+  load() {
+    document.querySelector('.move').innerHTML = this.movesCounter;
+    this.removeBoard();
     this.renderBoard();
 
     console.table(this.arr);
