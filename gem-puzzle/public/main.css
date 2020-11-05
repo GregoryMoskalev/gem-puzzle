@@ -38,16 +38,21 @@ body {
   margin: .2rem;
   width: 10rem;
   height: 10rem;
-  font-size: 1.8rem;
+  font-size: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: orange;
+  background-image: url(/assets/1.jpg);
+  -webkit-text-stroke: 1px black;
+  color: #fff;
 }
 
 .empty {
+  background-image: none;
   background-color: transparent;
   color: transparent;
+  -webkit-text-stroke: 1px transparent;
 }
 
 .selected {

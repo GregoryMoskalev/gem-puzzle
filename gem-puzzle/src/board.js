@@ -18,6 +18,8 @@ export default class Board {
   move(direction) {
     switch (direction) {
       case 'up':
+        console.log(this.history.length - 2, this.history.length, this.emptyX - 1);
+
         this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
         this.arr[this.emptyX - 1][this.emptyY] = 0;
         this.emptyX -= 1;
@@ -93,12 +95,14 @@ export default class Board {
           throw new Error('>:(');
       }
     }
+    console.log(this.history);
   }
 
   renderBoard() {
     document.querySelector('.move').innerHTML = this.movesCounter;
 
     let board = '';
+    const boardWidth = `${this.cellSize * this.size}rem`;
     let cellNumber;
 
     for (let i = 0, order = 1; i < this.size; i += 1) {
@@ -106,14 +110,17 @@ export default class Board {
         cellNumber = this.arr[i][j];
         const className = this.arr[i][j] ? 'cell' : 'cell empty';
         const draggable = !!this.arr[i][j];
+        const bGpos = `${Math.round(100 / (this.size - 1) * j)}% ${Math.round(
+          100 / (this.size - 1) * i
+        )}%`;
         order += 1;
-        board += `<div style='order:${order};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
+        board += `<div style='order:${order}; background-position: ${bGpos}; background-size: ${boardWidth};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
       }
     }
 
     const element = document.createElement('div');
     element.classList.add('board');
-    element.style.width = `${this.cellSize * this.size}rem`;
+    element.style.width = boardWidth;
     element.innerHTML = board;
 
     document.body.appendChild(element);
@@ -242,6 +249,15 @@ export default class Board {
               this.e.style.order = temp;
 
               this.e.style.transform = '';
+
+              if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
+                if (this.checkWin()) {
+                  document.querySelector(
+                    '.board'
+                  ).innerHTML += `Ура! Вы решили головоломку за ${document.querySelector('.time')
+                    .innerHTML} и ${document.querySelector('.move').innerHTML} ходов`;
+                }
+              }
             }, this.animationTime);
 
             [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
@@ -251,15 +267,6 @@ export default class Board {
             this.emptyX = i;
             this.emptyY = j;
             console.table(this.arr);
-
-            if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
-              if (this.checkWin()) {
-                document.querySelector(
-                  '.board'
-                ).innerHTML = `Ура! Вы решили головоломку за ${document.querySelector('.time')
-                  .innerHTML} и ${document.querySelector('.move').innerHTML} ходов`;
-              }
-            }
             return;
           }
         }
