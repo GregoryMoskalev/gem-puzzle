@@ -5,7 +5,8 @@ export default class Board {
     this.emptyX = 0;
     this.emptyY = 0;
     this.animationTime = 400;
-    this.cellSize = 10.4; //  rem with margin
+    this.boardWidth = 40.8;
+    this.marginSize = 0.1;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
         document.body.removeChild(elem);
@@ -13,13 +14,9 @@ export default class Board {
     };
   }
 
-  // let size = 4;
-
   move(direction) {
     switch (direction) {
       case 'up':
-        console.log(this.history.length - 2, this.history.length, this.emptyX - 1);
-
         this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
         this.arr[this.emptyX - 1][this.emptyY] = 0;
         this.emptyX -= 1;
@@ -95,12 +92,11 @@ export default class Board {
           throw new Error('>:(');
       }
     }
-    console.log(this.history);
   }
 
   renderBoard() {
     let board = '';
-    const boardWidth = `${this.cellSize * this.size}rem`;
+    const boardWidth = `${this.boardWidth}rem`;
     let cellNumber;
 
     for (let i = 0, order = 1; i < this.size; i += 1) {
@@ -110,7 +106,9 @@ export default class Board {
         const draggable = !!this.arr[i][j];
         const bGpos = this.bgPosArr[cellNumber - 1];
         order += 1;
-        board += `<div style='order:${order}; background-position: ${bGpos}; background-size: ${boardWidth};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
+
+        board += `<div style='width:${this.cellSize}rem; height:${this
+          .cellSize}rem; order:${order}; background-position: ${bGpos}; background-size: ${boardWidth};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
       }
     }
 
@@ -120,8 +118,6 @@ export default class Board {
     element.innerHTML = board;
 
     document.body.appendChild(element);
-
-    console.log(element.style.width, `${Math.floor(this.cellSize * this.size)}`);
   }
 
   createBoard() {
@@ -142,7 +138,6 @@ export default class Board {
         }
       }
     }
-    console.log(this.bgPosArr);
   }
 
   draw() {
@@ -195,8 +190,6 @@ export default class Board {
       }
     }
 
-    console.log('check for win!', win, this.arr);
-
     for (let i = 0; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
         if (i + j !== (this.size - 1) * 2) {
@@ -205,7 +198,6 @@ export default class Board {
       }
     }
 
-    console.log('win!', win, this.arr);
     return true;
   }
 
@@ -228,7 +220,6 @@ export default class Board {
 
             //  find where are we moving
             if (this.emptyX - i < 0) {
-              console.log('up!');
               this.direction = 'up';
               this.moveAnimation();
             } else if (this.emptyX - i > 0) {
@@ -237,11 +228,9 @@ export default class Board {
             } else if (this.emptyY - j < 0) {
               this.direction = 'left';
               this.moveAnimation();
-              console.log('left');
             } else if (this.emptyY - j > 0) {
               this.direction = 'right';
               this.moveAnimation();
-              console.log('right');
             }
 
             setTimeout(() => {
@@ -267,7 +256,6 @@ export default class Board {
             ];
             this.emptyX = i;
             this.emptyY = j;
-            console.table(this.arr);
             return;
           }
         }
@@ -278,14 +266,17 @@ export default class Board {
   // eslint-disable-next-line class-methods-use-this
 
   init() {
+    this.history = [];
     this.movesCounter = 0;
     document.querySelector('.move').innerHTML = this.movesCounter;
     this.size = document.getElementById('fieldSize').value;
+
+    this.cellSize = parseFloat(this.boardWidth / this.size - 2 * this.marginSize).toFixed(3);
+
     this.removeBoard();
     this.createBoard();
     this.shuffle();
     this.renderBoard();
-    console.table(this.arr);
 
     document.querySelectorAll('.cell').forEach((cell) => {
       cell.addEventListener('mouseup', (evt) => {
@@ -307,8 +298,6 @@ export default class Board {
     document.querySelector('.move').innerHTML = this.movesCounter;
     this.removeBoard();
     this.renderBoard();
-
-    console.table(this.arr);
 
     document.querySelectorAll('.cell').forEach((cell) => {
       cell.addEventListener('mouseup', (evt) => {

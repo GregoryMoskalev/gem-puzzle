@@ -4,10 +4,10 @@ import Timer from './Timer.js';
 const board = new Board();
 const timer = new Timer();
 
-const header = document.createElement('header');
+const menu = document.createElement('menu');
 
-header.innerHTML = `  
-<header class="header">
+menu.innerHTML = `  
+<div class="menu">
   <button class="new-game">New game</button>
   <button class="save">Save</button>
   <button class="load">Load</button>
@@ -21,10 +21,10 @@ header.innerHTML = `
   <option value="6">6</option>
   <option value="7">7</option>
   <option value="8">8</option>
-</select>
-</header>`;
+  </select>
+</div>`;
 
-document.body.appendChild(header);
+document.body.appendChild(menu);
 
 board.init();
 timer.init();
@@ -60,12 +60,9 @@ document.querySelector('.load').addEventListener('click', () => {
   board.load();
   timer.load();
   [ board.emptyX, board.emptyY ] = zero;
-  console.log(board.movesCounter);
 });
 
-document.getElementById('fieldSize').addEventListener('change', (evt) => {
-  console.log(evt.target.value);
+document.getElementById('fieldSize').addEventListener('change', () => {
   board.init();
   timer.init();
-
 });
