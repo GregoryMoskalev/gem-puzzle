@@ -44,6 +44,28 @@ body {
   }
 }
 
+.header {
+  position: absolute;
+  top: 1rem;
+}
+
+.heading {
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 8rem;
+  margin: 0 1rem;
+  border: none;
+  background-color: rgb(29%, 33%, 39%, .2);
+
+  cursor: pointer;
+}
+
 .board {
   display: flex;
   flex-wrap: wrap;
@@ -74,4 +96,24 @@ body {
 
 .selected {
   background-color: orangered;
+}
+
+.menu {
+  width: 40.8rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+}
+.settings {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.counters {
+  margin-top: 1rem;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
 }

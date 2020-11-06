@@ -295,6 +295,7 @@ export default class Board {
   }
 
   load() {
+    this.cellSize = parseFloat(this.boardWidth / this.size - 2 * this.marginSize).toFixed(3);
     document.querySelector('.move').innerHTML = this.movesCounter;
     this.removeBoard();
     this.renderBoard();

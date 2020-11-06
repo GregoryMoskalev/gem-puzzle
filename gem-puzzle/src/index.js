@@ -4,25 +4,33 @@ import Timer from './Timer.js';
 const board = new Board();
 const timer = new Timer();
 
-const menu = document.createElement('menu');
+const header = document.createElement('header');
+header.classList.add('header');
+header.innerHTML = '<h1 class="heading">gem puzzle</h1>';
+document.body.appendChild(header);
+
+const menu = document.createElement('div');
+menu.classList.add('menu');
 
 menu.innerHTML = `  
-<div class="menu">
-  <button class="new-game">New game</button>
-  <button class="save">Save</button>
-  <button class="load">Load</button>
-  <div class="timer"><span>Timer:</span><span class="time">0:00</span></div>
-  <div class="moves"><span>Moves:</span><span class="move">0</span></div>
-  <label for="fieldSize">Field size:</label>
-  <select id="fieldSize">
-  <option value="3">3</option>
-  <option selected="selected" value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
-  </select>
-</div>`;
+  <div class="settings">
+    <button class="new-game btn">New</button>
+    <button class="save btn">Save</button>
+    <button class="load btn">Load</button>
+    <label for="fieldSize">Field size:</label>
+    <select id="fieldSize">
+      <option value="3">3</option>
+      <option selected="selected" value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+    </select>
+  </div>
+  <div class="counters">
+    <div class="timer"><span>Timer:</span><span class="time">0:00</span></div>
+    <div class="moves"><span>Moves:</span><span class="move">0</span></div>
+  </div>`;
 
 document.body.appendChild(menu);
 
@@ -38,6 +46,7 @@ document.querySelector('.save').addEventListener('click', () => {
   localStorage.setItem(
     'gameSave',
     JSON.stringify({
+      bgPosition: board.bgPosArr,
       history: board.history,
       size: board.size,
       boardTable: board.arr,
@@ -49,9 +58,10 @@ document.querySelector('.save').addEventListener('click', () => {
 });
 
 document.querySelector('.load').addEventListener('click', () => {
-  const { history, size, boardTable, time, moves, zero } = JSON.parse(
+  const { bgPosition, history, size, boardTable, time, moves, zero } = JSON.parse(
     localStorage.getItem('gameSave')
   );
+  board.bgPosArr = bgPosition;
   board.history = history;
   board.size = size;
   timer.currentTime = time;
