@@ -99,8 +99,6 @@ export default class Board {
   }
 
   renderBoard() {
-    document.querySelector('.move').innerHTML = this.movesCounter;
-
     let board = '';
     const boardWidth = `${this.cellSize * this.size}rem`;
     let cellNumber;
@@ -110,9 +108,7 @@ export default class Board {
         cellNumber = this.arr[i][j];
         const className = this.arr[i][j] ? 'cell' : 'cell empty';
         const draggable = !!this.arr[i][j];
-        const bGpos = `${Math.round(100 / (this.size - 1) * j)}% ${Math.round(
-          100 / (this.size - 1) * i
-        )}%`;
+        const bGpos = this.bgPosArr[cellNumber - 1];
         order += 1;
         board += `<div style='order:${order}; background-position: ${bGpos}; background-size: ${boardWidth};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
       }
@@ -130,6 +126,7 @@ export default class Board {
 
   createBoard() {
     this.arr = [];
+    this.bgPosArr = [];
     this.emptyX = this.size - 1;
     this.emptyY = this.size - 1;
     for (let i = 0; i < this.size; i += 1) {
@@ -137,11 +134,15 @@ export default class Board {
       for (let j = 0; j < this.size; j += 1) {
         if (i + j !== (this.size - 1) * 2) {
           this.arr[i][j] = i * this.size + j + 1;
+          this.bgPosArr.push(
+            `${Math.round(100 / (this.size - 1) * j)}% ${Math.round(100 / (this.size - 1) * i)}%`
+          );
         } else {
           this.arr[i][j] = 0;
         }
       }
     }
+    console.log(this.bgPosArr);
   }
 
   draw() {
@@ -277,13 +278,13 @@ export default class Board {
   // eslint-disable-next-line class-methods-use-this
 
   init() {
+    this.movesCounter = 0;
+    document.querySelector('.move').innerHTML = this.movesCounter;
     this.size = document.getElementById('fieldSize').value;
     this.removeBoard();
     this.createBoard();
     this.shuffle();
-    this.movesCounter = 0;
     this.renderBoard();
-
     console.table(this.arr);
 
     document.querySelectorAll('.cell').forEach((cell) => {
