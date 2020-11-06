@@ -54,16 +54,29 @@ body {
   font-weight: normal;
 }
 
-.btn {
+.btn,
+#fieldSize {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 8rem;
+  height: 3rem;
   margin: 0 1rem;
   border: none;
-  background-color: rgb(29%, 33%, 39%, .2);
+  background-color: rgb(29%, 33%, 39%, .8);
+  color: #fff;
+  border-radius: 1px;
 
   cursor: pointer;
+}
+
+.btn:hover {
+  background-color: rgb(29%, 33%, 39%, .6);
+}
+
+.size {
+  display: flex;
+  flex-direction: column;
 }
 
 .board {

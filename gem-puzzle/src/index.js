@@ -17,15 +17,17 @@ menu.innerHTML = `
     <button class="new-game btn">New</button>
     <button class="save btn">Save</button>
     <button class="load btn">Load</button>
-    <label for="fieldSize">Field size:</label>
-    <select id="fieldSize">
-      <option value="3">3</option>
-      <option selected="selected" value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-      <option value="7">7</option>
-      <option value="8">8</option>
-    </select>
+    <div class="size">
+      <select id="fieldSize">
+      <option selected="selected" value="4" disabled>Field size</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+      </select>
+    </div>
   </div>
   <div class="counters">
     <div class="timer"><span>Timer:</span><span class="time">0:00</span></div>
