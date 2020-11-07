@@ -25,6 +25,10 @@ export default class Timer {
     this.renderTimer();
   }
 
+  timerPause() {
+    clearInterval(this.time);
+  }
+
   renderTimer() {
     document.querySelector('.time').innerHTML = this.timer;
   }
@@ -43,4 +47,3 @@ export default class Timer {
     this.calcCurrentTime();
   }
 }
-

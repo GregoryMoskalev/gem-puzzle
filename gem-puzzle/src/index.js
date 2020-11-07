@@ -1,8 +1,7 @@
 import Board from './Board.js';
-import Timer from './Timer.js';
 
 const board = new Board();
-const timer = new Timer();
+
 
 const header = document.createElement('header');
 header.classList.add('header');
@@ -37,14 +36,15 @@ menu.innerHTML = `
 document.body.appendChild(menu);
 
 board.init();
-timer.init();
+
 
 document.querySelector('.new-game').addEventListener('click', () => {
   board.init();
-  timer.init();
+
 });
 
 document.querySelector('.save').addEventListener('click', () => {
+
   localStorage.setItem(
     'gameSave',
     JSON.stringify({
@@ -52,7 +52,7 @@ document.querySelector('.save').addEventListener('click', () => {
       history: board.history,
       size: board.size,
       boardTable: board.arr,
-      time: timer.currentTime,
+      time: board.timerC.currentTime,
       moves: board.movesCounter,
       zero: [ board.emptyX, board.emptyY ]
     })
@@ -66,15 +66,17 @@ document.querySelector('.load').addEventListener('click', () => {
   board.bgPosArr = bgPosition;
   board.history = history;
   board.size = size;
-  timer.currentTime = time;
+  board.timerC.currentTime = time;
   board.movesCounter = moves;
   board.arr = boardTable;
   board.load();
-  timer.load();
+  board.timerC.load();
   [ board.emptyX, board.emptyY ] = zero;
 });
 
 document.getElementById('fieldSize').addEventListener('change', () => {
   board.init();
-  timer.init();
+  board.timerC.init();
 });
+
+

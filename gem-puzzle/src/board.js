@@ -1,5 +1,8 @@
+import Timer from './Timer.js';
+
 export default class Board {
   constructor() {
+    this.timerC = new Timer();
     this.history = [];
     this.size = 4;
     this.emptyX = 0;
@@ -17,28 +20,83 @@ export default class Board {
   move(direction) {
     switch (direction) {
       case 'up':
-        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
-        this.arr[this.emptyX - 1][this.emptyY] = 0;
-        this.emptyX -= 1;
+        if (
+          this.emptyX !==
+          0 /* &&
+          (this.history.length <= 2 || this.emptyX - 1 !== this.history[this.history.length - 2][0]) */
+        ) {
+          this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
+          this.arr[this.emptyX - 1][this.emptyY] = 0;
+          this.emptyX -= 1;
+        } else {
+          this.move('down');
+        }
+
         break;
       case 'down':
-        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX + 1][this.emptyY];
-        this.arr[this.emptyX + 1][this.emptyY] = 0;
-        this.emptyX += 1;
+        if (
+          this.emptyX !==
+          this.size -
+            1 /* &&
+          (this.history.length <= 2 || this.emptyX + 1 !== this.history[this.history.length - 2][0]) */
+        ) {
+          this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX + 1][this.emptyY];
+          this.arr[this.emptyX + 1][this.emptyY] = 0;
+          this.emptyX += 1;
+        } else {
+          this.move('up');
+        }
         break;
       case 'right':
-        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY + 1];
-        this.arr[this.emptyX][this.emptyY + 1] = 0;
-        this.emptyY += 1;
+        if (
+          this.emptyY !==
+          this.size -
+            1 /* &&
+          (this.history.length <= 2 || this.emptyY + 1 !== this.history[this.history.length - 2][1]) */
+        ) {
+          this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY + 1];
+          this.arr[this.emptyX][this.emptyY + 1] = 0;
+          this.emptyY += 1;
+        } else {
+          this.move('left');
+        }
         break;
       case 'left':
-        this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY - 1];
-        this.arr[this.emptyX][this.emptyY - 1] = 0;
-        this.emptyY -= 1;
+        if (
+          this.emptyY !==
+          0 /* &&
+          (this.history.length <= 2 || this.emptyY - 1 !== this.history[this.history.length - 2][1]) */
+        ) {
+          this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY - 1];
+          this.arr[this.emptyX][this.emptyY - 1] = 0;
+          this.emptyY -= 1;
+        } else {
+          this.move('right');
+        }
         break;
       default:
         throw new Error('>:(');
     }
+  }
+
+  createBoard() {
+    const arr = [];
+
+    this.bgPosArr = [];
+    for (let i = 0; i < this.size; i += 1) {
+      arr[i] = [];
+      for (let j = 0; j < this.size; j += 1) {
+        if (i + j !== (this.size - 1) * 2) {
+          arr[i][j] = i * this.size + j + 1;
+          this.bgPosArr.push(
+            `${Math.round(100 / (this.size - 1) * j)}% ${Math.round(100 / (this.size - 1) * i)}%`
+          );
+        } else {
+          arr[i][j] = 0;
+        }
+      }
+    }
+    return arr;
   }
 
   shuffle() {
@@ -47,45 +105,30 @@ export default class Board {
     for (let i = 0; i < this.size ** 3; i += 1) {
       switch (Math.floor(4 * Math.random())) {
         case 0:
-          if (this.emptyX !== 0) {
-            //  MOVE UP
+          //  MOVE UP
 
-            this.move('up');
-          } else {
-            //  MOVE DOWN
-            this.move('down');
-          }
+          this.move('up');
+
           this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 1:
-          if (this.emptyY !== this.size - 1) {
-            //  MOVE RIGHT
-            this.move('right');
-          } else {
-            //  MOVE LEFT
-            this.move('left');
-          }
+          //  MOVE RIGHT
+          this.move('right');
+
           this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 2:
-          if (this.emptyX !== this.size - 1) {
-            //  MOVE DOWN
-            this.move('down');
-          } else {
-            //  MOVE UP
-            this.move('up');
-          }
+          //  MOVE DOWN
+          this.move('down');
+
           this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 3:
-          if (this.emptyY !== 0) {
-            //  MOVE LEFT
-            this.move('left');
-          } else {
-            //  MOVE RIGHT
-            this.move('right');
-            this.history.push([ this.emptyX, this.emptyY ]);
-          }
+          //  MOVE LEFT
+          this.move('left');
+
+          this.history.push([ this.emptyX, this.emptyY ]);
+
           break;
         default:
           i -= 1;
@@ -118,26 +161,6 @@ export default class Board {
     element.innerHTML = board;
 
     document.body.appendChild(element);
-  }
-
-  createBoard() {
-    this.arr = [];
-    this.bgPosArr = [];
-    this.emptyX = this.size - 1;
-    this.emptyY = this.size - 1;
-    for (let i = 0; i < this.size; i += 1) {
-      this.arr[i] = [];
-      for (let j = 0; j < this.size; j += 1) {
-        if (i + j !== (this.size - 1) * 2) {
-          this.arr[i][j] = i * this.size + j + 1;
-          this.bgPosArr.push(
-            `${Math.round(100 / (this.size - 1) * j)}% ${Math.round(100 / (this.size - 1) * i)}%`
-          );
-        } else {
-          this.arr[i][j] = 0;
-        }
-      }
-    }
   }
 
   draw() {
@@ -175,30 +198,6 @@ export default class Board {
 
       this.draw();
     }, 20);
-  }
-
-  checkWin() {
-    const win = [];
-    for (let i = 0; i < this.size; i += 1) {
-      win[i] = [];
-      for (let j = 0; j < this.size; j += 1) {
-        if (i + j !== (this.size - 1) * 2) {
-          win[i][j] = i * this.size + j + 1;
-        } else {
-          win[i][j] = 0;
-        }
-      }
-    }
-
-    for (let i = 0; i < this.size; i += 1) {
-      for (let j = 0; j < this.size; j += 1) {
-        if (i + j !== (this.size - 1) * 2) {
-          if (win[i][j] !== this.arr[i][j]) return false;
-        }
-      }
-    }
-
-    return true;
   }
 
   swap(number) {
@@ -242,6 +241,7 @@ export default class Board {
 
               if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
                 if (this.checkWin()) {
+                  this.timerC.timerPause();
                   document.querySelector(
                     '.board'
                   ).innerHTML += `Ура! Вы решили головоломку за ${document.querySelector('.time')
@@ -249,13 +249,15 @@ export default class Board {
                 }
               }
             }, this.animationTime);
-
             [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
               this.arr[this.emptyX][this.emptyY],
               this.arr[i][j]
             ];
             this.emptyX = i;
             this.emptyY = j;
+
+            this.history.push([ this.emptyX, this.emptyY ]);
+
             return;
           }
         }
@@ -263,7 +265,17 @@ export default class Board {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  checkWin() {
+    for (let i = 0; i < this.size; i += 1) {
+      for (let j = 0; j < this.size; j += 1) {
+        if (i + j !== (this.size - 1) * 2) {
+          if (this.win[i][j] !== this.arr[i][j]) return false;
+        }
+      }
+    }
+
+    return true;
+  }
 
   init() {
     this.history = [];
@@ -274,9 +286,17 @@ export default class Board {
     this.cellSize = parseFloat(this.boardWidth / this.size - 2 * this.marginSize).toFixed(3);
 
     this.removeBoard();
-    this.createBoard();
+
+    this.emptyX = this.size - 1;
+    this.emptyY = this.size - 1;
+
+    this.arr = this.createBoard();
+    this.win = this.createBoard();
+
     this.shuffle();
+
     this.renderBoard();
+    this.timerC.init();
 
     document.querySelectorAll('.cell').forEach((cell) => {
       cell.addEventListener('mouseup', (evt) => {
@@ -299,6 +319,8 @@ export default class Board {
     document.querySelector('.move').innerHTML = this.movesCounter;
     this.removeBoard();
     this.renderBoard();
+    this.win = this.createBoard();
+    this.timerC.init();
 
     document.querySelectorAll('.cell').forEach((cell) => {
       cell.addEventListener('mouseup', (evt) => {
