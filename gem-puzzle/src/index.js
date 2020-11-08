@@ -2,7 +2,6 @@ import Board from './Board.js';
 
 const board = new Board();
 
-
 const header = document.createElement('header');
 header.classList.add('header');
 header.innerHTML = '<h1 class="heading">gem puzzle</h1>';
@@ -13,6 +12,7 @@ menu.classList.add('menu');
 
 menu.innerHTML = `  
   <div class="settings">
+    <button style="position: absolute; top: 0;" class='cheat'>CHEAT</button>
     <button class="new-game btn">New</button>
     <button class="save btn">Save</button>
     <button class="load btn">Load</button>
@@ -37,14 +37,11 @@ document.body.appendChild(menu);
 
 board.init();
 
-
 document.querySelector('.new-game').addEventListener('click', () => {
   board.init();
-
 });
 
 document.querySelector('.save').addEventListener('click', () => {
-
   localStorage.setItem(
     'gameSave',
     JSON.stringify({
@@ -79,4 +76,7 @@ document.getElementById('fieldSize').addEventListener('change', () => {
   board.timerC.init();
 });
 
-
+document.querySelector('.cheat').addEventListener('click', () => {
+  board.timerC.timerPause();
+  board.back();
+});

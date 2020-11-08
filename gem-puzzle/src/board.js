@@ -17,61 +17,97 @@ export default class Board {
     };
   }
 
+  back() {
+    setTimeout(() => {
+      if (this.history.length) {
+        const [ x, y ] = this.history.pop();
+        this.e = document.querySelector(`#cell-${this.arr[x][y]}`);
+
+        if (this.emptyX < x) {
+          this.direction = 'up';
+          this.moveAnimation(300);
+        } else if (this.emptyX > x) {
+          this.direction = 'down';
+          this.moveAnimation(300);
+        } else if (this.emptyY < y) {
+          this.direction = 'left';
+          this.moveAnimation(300);
+        } else if (this.emptyY > y) {
+          this.direction = 'right';
+          this.moveAnimation(300);
+        }
+
+        setTimeout(() => {
+          const temp = this.arr[this.emptyX][this.emptyY];
+          this.arr[this.emptyX][this.emptyY] = this.arr[x][y];
+          this.arr[x][y] = temp;
+          this.emptyX = x;
+          this.emptyY = y;
+          this.removeBoard();
+          this.renderBoard();
+          this.back();
+        }, this.animationTime - 300);
+      } else if (this.checkWin()) {
+        const winBoard = document.querySelector('.board');
+        winBoard.classList.add('win');
+        winBoard.innerHTML = `<span class='win-text'>ЧИТЕР!</span>`;
+      }
+    }, this.animationTime - 300);
+  }
+
   move(direction) {
     switch (direction) {
       case 'up':
         if (
-          this.emptyX !==
-          0 /* &&
-          (this.history.length <= 2 || this.emptyX - 1 !== this.history[this.history.length - 2][0]) */
+          this.emptyX !== 0 &&
+          (this.history.length <= 2 || this.emptyX - 1 !== this.history[this.history.length - 2][0])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
           this.arr[this.emptyX - 1][this.emptyY] = 0;
           this.emptyX -= 1;
+          this.history.push([ this.emptyX, this.emptyY ]);
         } else {
-          this.move('down');
+          this.counter -= 1;
         }
 
         break;
       case 'down':
         if (
-          this.emptyX !==
-          this.size -
-            1 /* &&
-          (this.history.length <= 2 || this.emptyX + 1 !== this.history[this.history.length - 2][0]) */
+          this.emptyX !== this.size - 1 &&
+          (this.history.length <= 2 || this.emptyX + 1 !== this.history[this.history.length - 2][0])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX + 1][this.emptyY];
           this.arr[this.emptyX + 1][this.emptyY] = 0;
           this.emptyX += 1;
+          this.history.push([ this.emptyX, this.emptyY ]);
         } else {
-          this.move('up');
+          this.counter -= 1;
         }
         break;
       case 'right':
         if (
-          this.emptyY !==
-          this.size -
-            1 /* &&
-          (this.history.length <= 2 || this.emptyY + 1 !== this.history[this.history.length - 2][1]) */
+          this.emptyY !== this.size - 1 &&
+          (this.history.length <= 2 || this.emptyY + 1 !== this.history[this.history.length - 2][1])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY + 1];
           this.arr[this.emptyX][this.emptyY + 1] = 0;
           this.emptyY += 1;
+          this.history.push([ this.emptyX, this.emptyY ]);
         } else {
-          this.move('left');
+          this.counter -= 1;
         }
         break;
       case 'left':
         if (
-          this.emptyY !==
-          0 /* &&
-          (this.history.length <= 2 || this.emptyY - 1 !== this.history[this.history.length - 2][1]) */
+          this.emptyY !== 0 &&
+          (this.history.length <= 2 || this.emptyY - 1 !== this.history[this.history.length - 2][1])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY - 1];
           this.arr[this.emptyX][this.emptyY - 1] = 0;
           this.emptyY -= 1;
+          this.history.push([ this.emptyX, this.emptyY ]);
         } else {
-          this.move('right');
+          this.counter -= 1;
         }
         break;
       default:
@@ -101,37 +137,30 @@ export default class Board {
 
   shuffle() {
     this.history.push([ this.emptyX, this.emptyY ]);
-
-    for (let i = 0; i < this.size ** 3; i += 1) {
+    for (this.counter = 0; this.counter < this.size ** 3; this.counter += 1) {
       switch (Math.floor(4 * Math.random())) {
         case 0:
           //  MOVE UP
 
           this.move('up');
 
-          this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 1:
           //  MOVE RIGHT
           this.move('right');
 
-          this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 2:
           //  MOVE DOWN
           this.move('down');
 
-          this.history.push([ this.emptyX, this.emptyY ]);
           break;
         case 3:
           //  MOVE LEFT
           this.move('left');
 
-          this.history.push([ this.emptyX, this.emptyY ]);
-
           break;
         default:
-          i -= 1;
           throw new Error('>:(');
       }
     }
@@ -163,8 +192,8 @@ export default class Board {
     document.body.appendChild(element);
   }
 
-  draw() {
-    const remPerTick = this.cellSize / this.animationTime * this.timePassed;
+  draw(mod) {
+    const remPerTick = this.cellSize / (this.animationTime - mod) * this.timePassed;
     switch (this.direction) {
       case 'up':
         this.e.style.transform = `translate( 0, ${-remPerTick}rem)`;
@@ -183,7 +212,7 @@ export default class Board {
     }
   }
 
-  moveAnimation() {
+  moveAnimation(mod) {
     this.inAnimation = true;
     this.start = Date.now();
 
@@ -196,7 +225,7 @@ export default class Board {
         return;
       }
 
-      this.draw();
+      this.draw(mod);
     }, 20);
   }
 
@@ -220,16 +249,16 @@ export default class Board {
             //  find where are we moving
             if (this.emptyX - i < 0) {
               this.direction = 'up';
-              this.moveAnimation();
+              this.moveAnimation(0);
             } else if (this.emptyX - i > 0) {
               this.direction = 'down';
-              this.moveAnimation();
+              this.moveAnimation(0);
             } else if (this.emptyY - j < 0) {
               this.direction = 'left';
-              this.moveAnimation();
+              this.moveAnimation(0);
             } else if (this.emptyY - j > 0) {
               this.direction = 'right';
-              this.moveAnimation();
+              this.moveAnimation(0);
             }
 
             setTimeout(() => {
@@ -242,10 +271,11 @@ export default class Board {
               if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
                 if (this.checkWin()) {
                   this.timerC.timerPause();
-                  document.querySelector(
-                    '.board'
-                  ).innerHTML += `Ура! Вы решили головоломку за ${document.querySelector('.time')
-                    .innerHTML} и ${document.querySelector('.move').innerHTML} ходов`;
+                  const winBoard = document.querySelector('.board');
+                  winBoard.classList.add('win');
+                  winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
+                    '.time'
+                  ).innerHTML} и ${document.querySelector('.move').innerHTML} ходов</span>`;
                 }
               }
             }, this.animationTime);

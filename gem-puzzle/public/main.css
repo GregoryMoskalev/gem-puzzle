@@ -82,8 +82,26 @@ body {
 .board {
   display: flex;
   flex-wrap: wrap;
-  padding: 2px;
   width: 40.8rem;
+  height: 40.8rem;
+}
+
+.win {
+  background: url(../assets/1.jpg);
+  background-size: 100%;
+}
+
+.win-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  letter-spacing: .4rem;
+  font-size: large;
+  background-color: rgb(00%, 00%, 00%, .2);
+  text-align: center;
 }
 
 .cell {
