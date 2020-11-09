@@ -178,21 +178,20 @@ export default class Board {
         cellNumber = this.arr[i][j];
 
         const className = this.arr[i][j] ? 'cell' : 'cell empty';
-        const bgForCell = this.arr[i][j]
-          ? `background: url(../assets/images/${this.imgNumb}.jpg);`
-          : '';
 
         const draggable = !!this.arr[i][j];
         const bGpos = this.bgPosArr[cellNumber - 1];
+        const bgForCell = this.arr[i][j]
+          ? `background: url(../assets/images/${this
+              .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
+          : '';
         order += 1;
 
         board += `<div 
           style='width:${this.cellSize}rem;
           height:${this.cellSize}rem;
           order:${order};
-          ${bgForCell}
-          background-position: ${bGpos};
-          background-size: ${boardWidth};'
+          ${bgForCell}'
           id='cell-${cellNumber}'
           class='${className}'
           draggable="${draggable}">${cellNumber}</div>`;
@@ -326,13 +325,14 @@ export default class Board {
     this.winBoard = document.querySelector('.board');
     this.winBoard.classList.add('win');
 
-    if (cheat) {
-      this.winBoard.innerHTML += `<span class='win-text'>ЧИТЕР!</span>`;
-    } else {
-      this.winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
-        '.time'
-      ).innerHTML} и ${document.querySelector('.move').innerHTML} ходов</span>`;
-    }
+    this.winBoard.innerHTML += `<div style="background-image: url(../assets/images/${this
+      .imgNumb}.jpg);" class='win-text'>${cheat
+      ? 'ЧИТЕР!'
+      : `Ура! Вы решили головоломку за ${document.querySelector('.time')
+          .innerHTML} и ${document.querySelector('.move').innerHTML} ходов</div>`}</div>`;
+    setTimeout(() => {
+      this.winBoard.querySelector('.win-text').style.opacity = 1;
+    }, 50);
   }
 
   playWinSound() {

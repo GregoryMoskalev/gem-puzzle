@@ -15,7 +15,7 @@ menu.innerHTML = `
     <button class="new-game btn">New</button>
     <button class="save btn">Save</button>
     <button class="load btn">Load</button>
-    <button class="sound btn">Sound</button>
+    <button class="sound btn ${board.soundOn ? 'btn-on' : ''}">Sound</button>
     <div class="size">
       <select id="fieldSize">
       <option selected="selected" value="4" disabled>Field size</option>
@@ -84,6 +84,11 @@ document.querySelector('.cheat').addEventListener('click', () => {
   board.back();
 });
 
-document.querySelector('.sound').addEventListener('click', () => {
+document.querySelector('.sound').addEventListener('click', (evt) => {
   board.toggleSound();
+  if (board.soundOn) {
+    evt.target.classList.add('btn-on');
+  } else {
+    evt.target.classList.remove('btn-on');
+  }
 });

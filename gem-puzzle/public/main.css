@@ -1,3 +1,6 @@
+::selection {
+  color: #00adb5;
+}
 html,
 body {
   box-sizing: border-box;
@@ -29,7 +32,8 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 1.6rem;
-  background-color: #e8e8e8;
+  background-color: #222831;
+  color: #eeeeee;
 }
 
 @media screen and (max-width: 425px) {
@@ -63,15 +67,27 @@ body {
   height: 3rem;
   margin: 0 .4rem;
   border: none;
-  background-color: rgb(29%, 33%, 39%, .8);
-  color: #fff;
+  color: #e8ded2;
   border-radius: 1px;
-
+  background-color: #393e46;
   cursor: pointer;
 }
 
 .btn:hover {
-  background-color: rgb(29%, 33%, 39%, .6);
+  box-shadow: 0px 0px 5px 4px rgba(0, 173, 181, 0.51);
+}
+
+.save {
+  background-color: #393e46;
+}
+
+.load {
+  background-color: #393e46;
+}
+
+.btn-on,
+.new-game {
+  background-color: #00adb5;
 }
 
 .size {
@@ -100,8 +116,11 @@ body {
   color: #fff;
   letter-spacing: .4rem;
   font-size: large;
-  background-color: rgb(00%, 00%, 00%, .4);
+  background-position: 100%;
+  background-size: 100%;
+  opacity: 0;
   text-align: center;
+  transition: opacity .2s;
 }
 
 .cell {
@@ -115,6 +134,7 @@ body {
   align-items: center;
   background-color: orange;
   color: #fff;
+  text-shadow: 1px -1px 15px rgba(0, 0, 0, 1);
   border-radius: .2rem;
 }
 
@@ -122,6 +142,7 @@ body {
   background-image: none;
   background-color: transparent;
   color: transparent;
+  text-shadow: none;
 }
 
 .selected {
@@ -142,7 +163,7 @@ body {
   justify-content: space-around;
 }
 .counters {
-  margin-top: 1rem;
+  margin: 1rem 0;
   display: flex;
   width: 100%;
   justify-content: space-around;
