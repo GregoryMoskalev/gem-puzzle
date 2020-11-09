@@ -50,7 +50,7 @@ export default class Board {
           this.backTimer();
         }, this.animationTime);
       } else {
-        this.checkWin();
+        this.checkWin(true);
       }
     }, this.animationTime);
   }
@@ -317,7 +317,6 @@ export default class Board {
     localStorage.setItem('score-list', JSON.stringify(scoreList));
   }
 
-  // eslint-disable-next-line class-methods-use-this
   getScoreList() {
     this.scoreList = !this.scoreList;
 
@@ -340,7 +339,7 @@ export default class Board {
     }
   }
 
-  checkWin() {
+  checkWin(cheat) {
     for (let i = 0; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
         if (i + j !== (this.size - 1) * 2) {
@@ -349,7 +348,7 @@ export default class Board {
       }
     }
     this.playWinSound();
-    this.setWinMessage();
+    this.setWinMessage(cheat);
     this.setScore();
     return true;
   }

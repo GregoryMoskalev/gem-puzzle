@@ -1,7 +1,6 @@
 export default class Timer {
   constructor() {
     this.currentTime = 0;
-    // this.timer = '0:00';
   }
 
   calcCurrentTime() {
