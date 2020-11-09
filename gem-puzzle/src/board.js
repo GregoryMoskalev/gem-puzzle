@@ -7,9 +7,14 @@ export default class Board {
     this.size = 4;
     this.emptyX = 0;
     this.emptyY = 0;
-    this.animationTime = 400;
+    this.animationTime = 200;
+
     this.boardWidth = 40.8;
     this.marginSize = 0.1;
+    this.soundOn = true;
+    this.winSound = new Audio('../assets/win.mp3');
+    this.slideSound = new Audio('../assets/slide.mp3');
+    this.slideSound.volume = 0.2;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
         document.body.removeChild(elem);
@@ -22,24 +27,17 @@ export default class Board {
   }
 
   back() {
+    this.history.pop();
+    this.backTimer();
+  }
+
+  backTimer() {
     setTimeout(() => {
       if (this.history.length) {
         const [ x, y ] = this.history.pop();
         this.e = document.querySelector(`#cell-${this.arr[x][y]}`);
 
-        if (this.emptyX < x) {
-          this.direction = 'up';
-          this.moveAnimation(300);
-        } else if (this.emptyX > x) {
-          this.direction = 'down';
-          this.moveAnimation(300);
-        } else if (this.emptyY < y) {
-          this.direction = 'left';
-          this.moveAnimation(300);
-        } else if (this.emptyY > y) {
-          this.direction = 'right';
-          this.moveAnimation(300);
-        }
+        this.moveAnimation([ x, y ]);
 
         setTimeout(() => {
           const temp = this.arr[this.emptyX][this.emptyY];
@@ -49,12 +47,14 @@ export default class Board {
           this.emptyY = y;
           this.removeBoard();
           this.renderBoard();
-          this.back();
-        }, this.animationTime - 300);
+          this.playSlideSound();
+          this.backTimer();
+        }, this.animationTime);
       } else if (this.checkWin()) {
         this.setWinMessage(true);
+        this.playWinSound();
       }
-    }, this.animationTime - 300);
+    }, this.animationTime);
   }
 
   move(direction) {
@@ -178,7 +178,9 @@ export default class Board {
         cellNumber = this.arr[i][j];
 
         const className = this.arr[i][j] ? 'cell' : 'cell empty';
-        const bgForCell = this.arr[i][j] ? `background: url(../assets/${this.imgNumb}.jpg);` : '';
+        const bgForCell = this.arr[i][j]
+          ? `background: url(../assets/images/${this.imgNumb}.jpg);`
+          : '';
 
         const draggable = !!this.arr[i][j];
         const bGpos = this.bgPosArr[cellNumber - 1];
@@ -205,8 +207,8 @@ export default class Board {
     document.body.appendChild(element);
   }
 
-  draw(mod) {
-    const remPerTick = this.cellSize / (this.animationTime - mod) * this.timePassed;
+  draw() {
+    const remPerTick = this.cellSize / this.animationTime * this.timePassed;
     switch (this.direction) {
       case 'up':
         this.e.style.transform = `translate( 0, ${-remPerTick}rem)`;
@@ -225,7 +227,17 @@ export default class Board {
     }
   }
 
-  moveAnimation(mod) {
+  moveAnimation([ x, y ]) {
+    if (this.emptyX < x) {
+      this.direction = 'up';
+    } else if (this.emptyX > x) {
+      this.direction = 'down';
+    } else if (this.emptyY < y) {
+      this.direction = 'left';
+    } else if (this.emptyY > y) {
+      this.direction = 'right';
+    }
+
     this.inAnimation = true;
     this.start = Date.now();
 
@@ -238,8 +250,12 @@ export default class Board {
         return;
       }
 
-      this.draw(mod);
+      this.draw();
     }, 20);
+  }
+
+  toggleSound() {
+    this.soundOn = !this.soundOn;
   }
 
   swap(number) {
@@ -260,19 +276,9 @@ export default class Board {
             this.e = document.querySelector(`#cell-${this.arr[i][j]}`);
 
             //  find where are we moving
-            if (this.emptyX - i < 0) {
-              this.direction = 'up';
-              this.moveAnimation(0);
-            } else if (this.emptyX - i > 0) {
-              this.direction = 'down';
-              this.moveAnimation(0);
-            } else if (this.emptyY - j < 0) {
-              this.direction = 'left';
-              this.moveAnimation(0);
-            } else if (this.emptyY - j > 0) {
-              this.direction = 'right';
-              this.moveAnimation(0);
-            }
+            this.moveAnimation([ i, j ]);
+
+            this.playSlideSound();
 
             setTimeout(() => {
               const temp = zero.style.order;
@@ -285,6 +291,7 @@ export default class Board {
                 if (this.checkWin()) {
                   this.timerC.timerPause();
                   this.setWinMessage();
+                  this.playWinSound();
                 }
               }
             }, this.animationTime);
@@ -296,7 +303,6 @@ export default class Board {
             this.emptyY = j;
 
             this.history.push([ this.emptyX, this.emptyY ]);
-
             return;
           }
         }
@@ -317,17 +323,28 @@ export default class Board {
   }
 
   setWinMessage(cheat) {
-    const winBoard = document.querySelector('.board');
-    winBoard.classList.add('win');
+    this.winBoard = document.querySelector('.board');
+    this.winBoard.classList.add('win');
 
     if (cheat) {
-      winBoard.innerHTML = `<span class='win-text'>ЧИТЕР!</span>`;
+      this.winBoard.innerHTML += `<span class='win-text'>ЧИТЕР!</span>`;
     } else {
-      winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
+      this.winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
         '.time'
       ).innerHTML} и ${document.querySelector('.move').innerHTML} ходов</span>`;
     }
-    winBoard.style.backgroundImage = `url(../assets/${this.imgNumb}.jpg)`;
+  }
+
+  playWinSound() {
+    if (!this.soundOn) return;
+    this.winSound.currentTime = 0;
+    this.winSound.play();
+  }
+
+  playSlideSound() {
+    if (!this.soundOn) return;
+    this.slideSound.currentTime = 0;
+    this.slideSound.play();
   }
 
   init() {

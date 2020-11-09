@@ -12,10 +12,10 @@ menu.classList.add('menu');
 
 menu.innerHTML = `  
   <div class="settings">
-    <button style="position: absolute; top: 0;" class='cheat'>CHEAT</button>
     <button class="new-game btn">New</button>
     <button class="save btn">Save</button>
     <button class="load btn">Load</button>
+    <button class="sound btn">Sound</button>
     <div class="size">
       <select id="fieldSize">
       <option selected="selected" value="4" disabled>Field size</option>
@@ -27,6 +27,7 @@ menu.innerHTML = `
         <option value="8">8</option>
       </select>
     </div>
+    <button class="cheat btn">CHEAT</button>
   </div>
   <div class="counters">
     <div class="timer"><span>Timer:</span><span class="time">0:00</span></div>
@@ -81,4 +82,8 @@ document.getElementById('fieldSize').addEventListener('change', () => {
 document.querySelector('.cheat').addEventListener('click', () => {
   board.timerC.timerPause();
   board.back();
+});
+
+document.querySelector('.sound').addEventListener('click', () => {
+  board.toggleSound();
 });
