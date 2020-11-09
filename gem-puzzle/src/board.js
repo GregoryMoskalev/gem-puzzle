@@ -8,7 +8,6 @@ export default class Board {
     this.emptyX = 0;
     this.emptyY = 0;
     this.animationTime = 200;
-
     this.boardWidth = 40.8;
     this.marginSize = 0.1;
     this.soundOn = true;
@@ -50,9 +49,8 @@ export default class Board {
           this.playSlideSound();
           this.backTimer();
         }, this.animationTime);
-      } else if (this.checkWin()) {
-        this.setWinMessage(true);
-        this.playWinSound();
+      } else {
+        this.checkWin();
       }
     }, this.animationTime);
   }
@@ -169,7 +167,7 @@ export default class Board {
   }
 
   renderBoard() {
-    let board = '';
+    let board = `<div class="score-list">test</div>`;
     const boardWidth = `${this.boardWidth}rem`;
     let cellNumber;
 
@@ -289,8 +287,6 @@ export default class Board {
               if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
                 if (this.checkWin()) {
                   this.timerC.timerPause();
-                  this.setWinMessage();
-                  this.playWinSound();
                 }
               }
             }, this.animationTime);
@@ -309,6 +305,41 @@ export default class Board {
     }
   }
 
+  setScore() {
+    let scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
+    scoreList.push({ moves: this.movesCounter, size: this.size, time: this.timerC.timer });
+    if (scoreList.length > 10) {
+      scoreList.sort((a, b) => {
+        return a.moves - b.moves;
+      });
+      scoreList = scoreList.slice(0, 10);
+    }
+    localStorage.setItem('score-list', JSON.stringify(scoreList));
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  getScoreList() {
+    this.scoreList = !this.scoreList;
+
+    const scoreElem = document.querySelector('.score-list');
+    const scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
+    let list = '';
+
+    for (let i = scoreList.length - 1; i >= 0; i -= 1) {
+      list += `<li>Size: ${scoreList[i].size},&nbsp;&nbsp;&nbsp;&nbsp;Moves: ${scoreList[i]
+        .moves},&nbsp;&nbsp;&nbsp;&nbsp;Time: ${scoreList[i].time}</li>`;
+    }
+    scoreElem.innerHTML = `<h2>Best Scores</h2>
+      <ol class="score">${list}</ol>`;
+    if (this.scoreList) {
+      scoreElem.classList.add('score-list-on');
+      this.timerC.timerPause();
+    } else {
+      scoreElem.classList.remove('score-list-on');
+      this.timerC.calcCurrentTime();
+    }
+  }
+
   checkWin() {
     for (let i = 0; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
@@ -317,7 +348,9 @@ export default class Board {
         }
       }
     }
-
+    this.playWinSound();
+    this.setWinMessage();
+    this.setScore();
     return true;
   }
 
@@ -348,6 +381,7 @@ export default class Board {
   }
 
   init() {
+    this.scoreList = false;
     this.randomImgNumber(150, 1);
     this.history = [];
     this.movesCounter = 0;
