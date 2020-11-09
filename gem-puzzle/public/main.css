@@ -87,7 +87,6 @@ body {
 }
 
 .win {
-  background: url(../assets/1.jpg);
   background-size: 100%;
 }
 
@@ -114,7 +113,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: orange;
-  background-image: url(../assets/1.jpg);
   color: #fff;
   border-radius: .2rem;
 }

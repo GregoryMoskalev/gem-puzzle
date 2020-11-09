@@ -17,6 +17,10 @@ export default class Board {
     };
   }
 
+  randomImgNumber(max, min) {
+    this.imgNumb = Math.floor(Math.random() * (max - min) + min);
+  }
+
   back() {
     setTimeout(() => {
       if (this.history.length) {
@@ -48,9 +52,7 @@ export default class Board {
           this.back();
         }, this.animationTime - 300);
       } else if (this.checkWin()) {
-        const winBoard = document.querySelector('.board');
-        winBoard.classList.add('win');
-        winBoard.innerHTML = `<span class='win-text'>ЧИТЕР!</span>`;
+        this.setWinMessage(true);
       }
     }, this.animationTime - 300);
   }
@@ -174,13 +176,24 @@ export default class Board {
     for (let i = 0, order = 1; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
         cellNumber = this.arr[i][j];
+
         const className = this.arr[i][j] ? 'cell' : 'cell empty';
+        const bgForCell = this.arr[i][j] ? `background: url(../assets/${this.imgNumb}.jpg);` : '';
+
         const draggable = !!this.arr[i][j];
         const bGpos = this.bgPosArr[cellNumber - 1];
         order += 1;
 
-        board += `<div style='width:${this.cellSize}rem; height:${this
-          .cellSize}rem; order:${order}; background-position: ${bGpos}; background-size: ${boardWidth};' id='cell-${cellNumber}' class='${className}' draggable="${draggable}">${cellNumber}</div>`;
+        board += `<div 
+          style='width:${this.cellSize}rem;
+          height:${this.cellSize}rem;
+          order:${order};
+          ${bgForCell}
+          background-position: ${bGpos};
+          background-size: ${boardWidth};'
+          id='cell-${cellNumber}'
+          class='${className}'
+          draggable="${draggable}">${cellNumber}</div>`;
       }
     }
 
@@ -271,11 +284,7 @@ export default class Board {
               if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
                 if (this.checkWin()) {
                   this.timerC.timerPause();
-                  const winBoard = document.querySelector('.board');
-                  winBoard.classList.add('win');
-                  winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
-                    '.time'
-                  ).innerHTML} и ${document.querySelector('.move').innerHTML} ходов</span>`;
+                  this.setWinMessage();
                 }
               }
             }, this.animationTime);
@@ -307,7 +316,22 @@ export default class Board {
     return true;
   }
 
+  setWinMessage(cheat) {
+    const winBoard = document.querySelector('.board');
+    winBoard.classList.add('win');
+
+    if (cheat) {
+      winBoard.innerHTML = `<span class='win-text'>ЧИТЕР!</span>`;
+    } else {
+      winBoard.innerHTML = `<span class='win-text'>Ура! Вы решили головоломку за ${document.querySelector(
+        '.time'
+      ).innerHTML} и ${document.querySelector('.move').innerHTML} ходов</span>`;
+    }
+    winBoard.style.backgroundImage = `url(../assets/${this.imgNumb}.jpg)`;
+  }
+
   init() {
+    this.randomImgNumber(150, 1);
     this.history = [];
     this.movesCounter = 0;
     document.querySelector('.move').innerHTML = this.movesCounter;

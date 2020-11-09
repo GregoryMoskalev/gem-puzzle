@@ -51,13 +51,14 @@ document.querySelector('.save').addEventListener('click', () => {
       boardTable: board.arr,
       time: board.timerC.currentTime,
       moves: board.movesCounter,
-      zero: [ board.emptyX, board.emptyY ]
+      zero: [ board.emptyX, board.emptyY ],
+      imgNumb: board.imgNumb
     })
   );
 });
 
 document.querySelector('.load').addEventListener('click', () => {
-  const { bgPosition, history, size, boardTable, time, moves, zero } = JSON.parse(
+  const { bgPosition, history, size, boardTable, time, moves, zero, imgNumb } = JSON.parse(
     localStorage.getItem('gameSave')
   );
   board.bgPosArr = bgPosition;
@@ -66,9 +67,10 @@ document.querySelector('.load').addEventListener('click', () => {
   board.timerC.currentTime = time;
   board.movesCounter = moves;
   board.arr = boardTable;
+  [ board.emptyX, board.emptyY ] = zero;
+  board.imgNumb = imgNumb;
   board.load();
   board.timerC.load();
-  [ board.emptyX, board.emptyY ] = zero;
 });
 
 document.getElementById('fieldSize').addEventListener('change', () => {
