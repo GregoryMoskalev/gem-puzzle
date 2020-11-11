@@ -38,6 +38,7 @@ export default class Board {
         ];
         [ this.emptyX, this.emptyY ] = [ x, y ];
         [ zero.style.order, moveable.style.order ] = [ moveable.style.order, zero.style.order ];
+        this.checkForIdling();
         this.history.push([ this.emptyX, this.emptyY ]);
       }
       zero.classList.remove('hovered');
@@ -58,6 +59,12 @@ export default class Board {
       (Math.abs(this.emptyX - x) <= 1 && this.emptyY - y === 0) ||
       (Math.abs(this.emptyY - y) <= 1 && this.emptyX - x === 0)
     );
+  }
+
+  checkForIdling() {
+    const [ blX, blY ] = this.history[this.history.length - 2];
+    if (this.emptyX === blX && this.emptyY === blY) this.history.splice(-2, 2);
+    console.log(this.history);
   }
 
   backTimer() {
@@ -327,6 +334,7 @@ export default class Board {
             this.emptyX = i;
             this.emptyY = j;
 
+            this.checkForIdling();
             this.history.push([ this.emptyX, this.emptyY ]);
             return;
           }
