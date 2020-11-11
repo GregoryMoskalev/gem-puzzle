@@ -19,6 +19,28 @@ export default class Board {
         document.body.removeChild(elem);
       });
     };
+    this.findElem = (elem) => {
+      for (let x = 0; x < this.arr.length; x += 1) {
+        for (let y = 0; y < this.arr.length; y += 1) {
+          if (this.arr[x][y] === parseInt(elem.innerHTML, 10)) return [ x, y ];
+        }
+      }
+      throw new Error(elem);
+    };
+    this.dragDrop = (e) => {
+      const zero = e.target;
+      const moveable = document.querySelector('.hide');
+      const [ x, y ] = this.findElem(moveable);
+      if (this.isNearZero(x, y)) {
+        [ this.arr[x][y], this.arr[this.emptyX][this.emptyY] ] = [
+          this.arr[this.emptyX][this.emptyY],
+          this.arr[x][y]
+        ];
+        [ this.emptyX, this.emptyY ] = [ x, y ];
+        [ zero.style.order, moveable.style.order ] = [ moveable.style.order, zero.style.order ];
+      }
+      zero.classList.remove('hovered');
+    };
   }
 
   randomImgNumber(max, min) {
@@ -28,6 +50,13 @@ export default class Board {
   back() {
     this.history.pop();
     this.backTimer();
+  }
+
+  isNearZero(x, y) {
+    return !!(
+      (Math.abs(this.emptyX - x) <= 1 && this.emptyY - y === 0) ||
+      (Math.abs(this.emptyY - y) <= 1 && this.emptyX - x === 0)
+    );
   }
 
   backTimer() {
@@ -175,17 +204,20 @@ export default class Board {
       for (let j = 0; j < this.size; j += 1) {
         cellNumber = this.arr[i][j];
 
-        const className = this.arr[i][j] ? 'cell' : 'cell empty';
+        const className = cellNumber ? 'cell' : 'cell empty';
 
-        const draggable = !!this.arr[i][j];
+        const draggable = !!cellNumber;
+
+        const preventDef = !cellNumber ? "ondragover = 'event.preventDefault()'" : '';
         const bGpos = this.bgPosArr[cellNumber - 1];
-        const bgForCell = this.arr[i][j]
+        const bgForCell = cellNumber
           ? `background: url(../assets/images/${this
               .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
           : '';
         order += 1;
 
         board += `<div 
+        ${preventDef}
           style='width:${this.cellSize}rem;
           height:${this.cellSize}rem;
           order:${order};
@@ -261,10 +293,7 @@ export default class Board {
     for (let i = 0; i < this.arr.length; i += 1) {
       for (let j = 0; j < this.arr[i].length; j += 1) {
         if (this.arr[i][j] === number) {
-          if (
-            (Math.abs(this.emptyX - i) <= 1 && this.emptyY - j === 0) ||
-            (Math.abs(this.emptyY - j) <= 1 && this.emptyX - i === 0)
-          ) {
+          if (this.isNearZero(i, j)) {
             // Move counter
             this.movesCounter += 1;
             document.querySelector('.move').innerHTML = this.movesCounter;
@@ -379,6 +408,24 @@ export default class Board {
     this.slideSound.play();
   }
 
+  dragStart() {
+    setTimeout(() => {
+      this.classList.add('hide');
+    }, 0);
+  }
+
+  dragEnd() {
+    this.classList.remove('hide');
+  }
+
+  dragEnter() {
+    this.classList.add('hovered');
+  }
+
+  dragLeave() {
+    this.classList.remove('hovered');
+  }
+
   init() {
     this.scoreList = false;
     this.randomImgNumber(150, 1);
@@ -415,6 +462,10 @@ export default class Board {
       cell.addEventListener('drop', this.dragDrop);
 
       cell.addEventListener('dragend', this.dragEnd);
+
+      cell.addEventListener('dragenter', this.dragEnter);
+
+      cell.addEventListener('dragleave', this.dragLeave);
     });
   }
 

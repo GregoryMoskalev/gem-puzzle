@@ -197,3 +197,12 @@ body {
 .score-list-on {
   display: flex;
 }
+
+.hide {
+  background-image: none !important;
+  color: transparent;
+}
+
+.hovered {
+  background-color: #4f555e !important;
+}
