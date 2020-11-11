@@ -64,7 +64,6 @@ export default class Board {
   checkForIdling() {
     const [ blX, blY ] = this.history[this.history.length - 2];
     if (this.emptyX === blX && this.emptyY === blY) this.history.splice(-2, 2);
-    console.log(this.history);
   }
 
   backTimer() {
@@ -499,6 +498,10 @@ export default class Board {
       cell.addEventListener('drop', this.dragDrop);
 
       cell.addEventListener('dragend', this.dragEnd);
+
+      cell.addEventListener('dragenter', this.dragEnter);
+
+      cell.addEventListener('dragleave', this.dragLeave);
     });
   }
 }
