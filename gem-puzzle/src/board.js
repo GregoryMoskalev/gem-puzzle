@@ -38,6 +38,7 @@ export default class Board {
         ];
         [ this.emptyX, this.emptyY ] = [ x, y ];
         [ zero.style.order, moveable.style.order ] = [ moveable.style.order, zero.style.order ];
+        this.history.push([ this.emptyX, this.emptyY ]);
       }
       zero.classList.remove('hovered');
     };
