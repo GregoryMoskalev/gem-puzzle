@@ -43,6 +43,7 @@ export default class Board {
         this.checkForIdling();
         this.history.push([ this.emptyX, this.emptyY ]);
         this.playDragSound();
+        this.addMove();
       }
       zero.classList.remove('hovered');
     };
@@ -246,6 +247,11 @@ export default class Board {
     document.body.appendChild(element);
   }
 
+  addMove() {
+    this.movesCounter += 1;
+    document.querySelector('.move').innerHTML = this.movesCounter;
+  }
+
   draw() {
     const remPerTick = this.cellSize / this.animationTime * this.timePassed;
     switch (this.direction) {
@@ -305,8 +311,7 @@ export default class Board {
         if (this.arr[i][j] === number) {
           if (this.isNearZero(i, j)) {
             // Move counter
-            this.movesCounter += 1;
-            document.querySelector('.move').innerHTML = this.movesCounter;
+            this.addMove();
 
             const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
             this.e = document.querySelector(`#cell-${this.arr[i][j]}`);
