@@ -14,6 +14,8 @@ export default class Board {
     this.winSound = new Audio('../assets/win.mp3');
     this.slideSound = new Audio('../assets/slide.mp3');
     this.slideSound.volume = 0.2;
+    this.dragNDropSound = new Audio('../assets/whoosh-grainy_gkoaqyn_.mp3');
+    this.dragNDropSound.volume = 0.3;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
         document.body.removeChild(elem);
@@ -40,6 +42,7 @@ export default class Board {
         [ zero.style.order, moveable.style.order ] = [ moveable.style.order, zero.style.order ];
         this.checkForIdling();
         this.history.push([ this.emptyX, this.emptyY ]);
+        this.playDragSound();
       }
       zero.classList.remove('hovered');
     };
@@ -414,6 +417,12 @@ export default class Board {
     if (!this.soundOn) return;
     this.slideSound.currentTime = 0;
     this.slideSound.play();
+  }
+
+  playDragSound() {
+    if (!this.soundOn) return;
+    this.dragNDropSound.currentTime = 0.15;
+    this.dragNDropSound.play();
   }
 
   dragStart() {
