@@ -60,7 +60,7 @@ export default class Board {
       case 'up':
         if (
           this.emptyX !== 0 &&
-          (this.history.length <= 2 || this.emptyX - 1 !== this.history[this.history.length - 2][0])
+          (this.history.length <= 1 || this.emptyX - 1 !== this.history[this.history.length - 2][0])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX - 1][this.emptyY];
           this.arr[this.emptyX - 1][this.emptyY] = 0;
@@ -74,7 +74,7 @@ export default class Board {
       case 'down':
         if (
           this.emptyX !== this.size - 1 &&
-          (this.history.length <= 2 || this.emptyX + 1 !== this.history[this.history.length - 2][0])
+          (this.history.length <= 1 || this.emptyX + 1 !== this.history[this.history.length - 2][0])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX + 1][this.emptyY];
           this.arr[this.emptyX + 1][this.emptyY] = 0;
@@ -87,7 +87,7 @@ export default class Board {
       case 'right':
         if (
           this.emptyY !== this.size - 1 &&
-          (this.history.length <= 2 || this.emptyY + 1 !== this.history[this.history.length - 2][1])
+          (this.history.length <= 1 || this.emptyY + 1 !== this.history[this.history.length - 2][1])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY + 1];
           this.arr[this.emptyX][this.emptyY + 1] = 0;
@@ -100,7 +100,7 @@ export default class Board {
       case 'left':
         if (
           this.emptyY !== 0 &&
-          (this.history.length <= 2 || this.emptyY - 1 !== this.history[this.history.length - 2][1])
+          (this.history.length <= 1 || this.emptyY - 1 !== this.history[this.history.length - 2][1])
         ) {
           this.arr[this.emptyX][this.emptyY] = this.arr[this.emptyX][this.emptyY - 1];
           this.arr[this.emptyX][this.emptyY - 1] = 0;
