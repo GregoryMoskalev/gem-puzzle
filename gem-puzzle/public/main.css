@@ -78,6 +78,10 @@ body {
   box-shadow: 0px 0px 5px 4px rgba(0, 173, 181, 0.51);
 }
 
+.btn:hover:disabled {
+  box-shadow: 0px 0px 5px 4px #b530007c;
+}
+
 .cheat {
   padding: 0 .4rem;
 }
@@ -90,9 +94,17 @@ body {
   background-color: #393e46;
 }
 
+.sound {
+  background-color: #b53000;
+}
+
 .btn-on,
 .new-game {
   background-color: #00adb5;
+}
+
+.new-game:disabled {
+  background-color: #b53000;
 }
 
 .size {
@@ -205,4 +217,9 @@ body {
 
 .hovered {
   background-color: #4f555e !important;
+}
+
+:disabled {
+  color: #e8ded2;
+  cursor: not-allowed !important;
 }

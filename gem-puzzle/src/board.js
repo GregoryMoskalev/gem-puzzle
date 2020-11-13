@@ -47,6 +47,11 @@ export default class Board {
       }
       zero.classList.remove('hovered');
     };
+    this.toggleButtons = () => {
+      document.querySelectorAll('.btn:not(.sound),#fieldSize').forEach((e) => {
+        e.disabled = !e.disabled;
+      });
+    }
   }
 
   randomImgNumber(max, min) {
@@ -54,6 +59,7 @@ export default class Board {
   }
 
   back() {
+    this.toggleButtons()
     this.history.pop();
     this.backTimer();
   }
@@ -64,6 +70,9 @@ export default class Board {
       (Math.abs(this.emptyY - y) <= 1 && this.emptyX - x === 0)
     );
   }
+
+
+
 
   checkForIdling() {
     const [ blX, blY ] = this.history[this.history.length - 2];
@@ -91,6 +100,7 @@ export default class Board {
         }, this.animationTime);
       } else {
         this.checkWin(true);
+        this.toggleButtons()
       }
     }, this.animationTime);
   }
