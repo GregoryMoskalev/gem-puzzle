@@ -1,18 +1,13 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true
+    es6: true
   },
-  // parser: '@typescript-eslint/parser',
-  plugins: [ '@typescript-eslint' ],
+
   extends: [
     'eslint:recommended',
     'airbnb-base',
     'prettier',
-    'plugin:import/typescript',
-
-    // 'plugin:@typescript-eslint/eslint-recommended',
-    // 'plugin:@typescript-eslint/recommended'
   ],
   globals: {
     Atomics: 'readonly',

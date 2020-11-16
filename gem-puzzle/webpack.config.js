@@ -1,4 +1,7 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -20,11 +23,30 @@ module.exports = {
     path: path.resolve(__dirname, 'public')
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
+    historyApiFallback: true,
+    contentBase: path.resolve(__dirname, './public'),
+    open: true,
     compress: true,
-    port: 3000,
-    overlay: true,
-    stats: 'errors-only',
-    clientLogLevel: 'none'
+    hot: true,
+    port: 5500
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: 'gem-puzzle',
+      template: path.resolve(__dirname, './src/template.html'),
+      filename: 'index.html'
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new ESLintPlugin()
+  ],
+  module: {
+    rules: [
+      // JavaScript
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [ 'babel-loader' ]
+      }
+    ]
   }
 };

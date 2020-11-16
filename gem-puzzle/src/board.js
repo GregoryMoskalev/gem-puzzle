@@ -11,10 +11,10 @@ export default class Board {
     this.boardWidth = 40.8;
     this.marginSize = 0.1;
     this.soundOn = true;
-    this.winSound = new Audio('../assets/win.mp3');
-    this.slideSound = new Audio('../assets/slide.mp3');
+    this.winSound = new Audio('./assets/win.mp3');
+    this.slideSound = new Audio('./assets/slide.mp3');
     this.slideSound.volume = 0.2;
-    this.dragNDropSound = new Audio('../assets/whoosh-grainy_gkoaqyn_.mp3');
+    this.dragNDropSound = new Audio('./assets/whoosh-grainy_gkoaqyn_.mp3');
     this.dragNDropSound.volume = 0.3;
     this.removeBoard = () => {
       document.querySelectorAll('.board').forEach((elem) => {
@@ -229,7 +229,7 @@ export default class Board {
         const preventDef = !cellNumber ? "ondragover = 'event.preventDefault()'" : '';
         const bGpos = this.bgPosArr[cellNumber - 1];
         const bgForCell = cellNumber
-          ? `background: url(../assets/images/${this
+          ? `background: url(./assets/images/${this
               .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
           : '';
         order += 1;
@@ -411,7 +411,7 @@ export default class Board {
     this.winBoard = document.querySelector('.board');
     this.winBoard.classList.add('win');
 
-    this.winBoard.innerHTML += `<div style="background-image: url(../assets/images/${this
+    this.winBoard.innerHTML += `<div style="background-image: url(./assets/images/${this
       .imgNumb}.jpg);" class='win-text'>${cheat
       ? 'ЧИТЕР!'
       : `Ура! Вы решили головоломку за ${document.querySelector('.time')
