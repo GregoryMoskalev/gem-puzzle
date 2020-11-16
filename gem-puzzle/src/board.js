@@ -66,8 +66,8 @@ export default class Board {
 
   isNearZero(x, y) {
     return !!(
-      (Math.abs(this.emptyX - x) <= 1 && this.emptyY - y === 0) ||
-      (Math.abs(this.emptyY - y) <= 1 && this.emptyX - x === 0)
+      (Math.abs(this.emptyX - x) === 1 && this.emptyY - y === 0) ||
+      (Math.abs(this.emptyY - y) === 1 && this.emptyX - x === 0)
     );
   }
 
