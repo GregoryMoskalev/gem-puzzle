@@ -360,12 +360,11 @@ export default class Board {
   setScore() {
     let scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
     scoreList.push({ moves: this.movesCounter, size: this.size, time: this.timerC.timer });
-    if (scoreList.length > 10) {
-      scoreList.sort((a, b) => {
-        return a.moves - b.moves;
-      });
-      scoreList = scoreList.slice(0, 10);
-    }
+    scoreList.sort((a, b) => {
+      return a.moves - b.moves;
+    });
+    scoreList = scoreList.slice(0, 10);
+
     localStorage.setItem('score-list', JSON.stringify(scoreList));
   }
 
@@ -376,7 +375,7 @@ export default class Board {
     const scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
     let list = '';
 
-    for (let i = scoreList.length - 1; i >= 0; i -= 1) {
+    for (let i = 0; i < scoreList.length; i += 1) {
       list += `<li>Size: ${scoreList[i].size},&nbsp;&nbsp;&nbsp;&nbsp;Moves: ${scoreList[i]
         .moves},&nbsp;&nbsp;&nbsp;&nbsp;Time: ${scoreList[i].time}</li>`;
     }
