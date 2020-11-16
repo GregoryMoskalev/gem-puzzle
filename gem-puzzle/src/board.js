@@ -506,7 +506,7 @@ export default class Board {
     this.removeBoard();
     this.renderBoard();
     this.win = this.createBoard();
-    this.timerC.init();
+    this.timerC.load();
 
     document.querySelectorAll('.cell').forEach((cell) => {
       cell.addEventListener('mouseup', (evt) => {
