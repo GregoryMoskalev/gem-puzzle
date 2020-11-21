@@ -516,6 +516,7 @@ export default class Board {
   }
 
   load() {
+    this.setFieldSizeInSelector();
     this.cellSize = parseFloat(this.boardWidth / this.size - 2 * this.marginSize).toFixed(3);
     document.querySelector('.move').innerHTML = this.movesCounter;
     this.removeBoard();
@@ -525,5 +526,9 @@ export default class Board {
 
 
     this.dragdropHandler();
+  }
+
+  setFieldSizeInSelector(){
+    document.querySelector('#fieldSize').options.selectedIndex = this.size - 2;
   }
 }
