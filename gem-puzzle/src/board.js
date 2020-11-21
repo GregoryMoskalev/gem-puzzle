@@ -228,13 +228,13 @@ export default class Board {
         let preventDef = "ondragover = 'event.preventDefault()'";
         let bgForCell = '';
 
-        if(cellNumber) {
+        if (cellNumber) {
           const bGpos = this.bgPosArr[cellNumber - 1];
           className = 'cell';
           draggable = true;
           preventDef = '';
           bgForCell = `background: url(./assets/images/${this
-            .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
+            .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`;
         }
 
         order += 1;
@@ -320,43 +320,40 @@ export default class Board {
 
     for (let i = 0; i < this.arr.length; i += 1) {
       for (let j = 0; j < this.arr[i].length; j += 1) {
-        if (this.arr[i][j] === number) {
-          if (this.isNearZero(i, j)) {
-            // Move counter
-            this.addMove();
+        if (this.arr[i][j] === number && this.isNearZero(i, j)) {
+          // Move counter
+          this.addMove();
 
-            const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
-            this.e = document.querySelector(`#cell-${this.arr[i][j]}`);
+          const zero = document.querySelector(`#cell-${this.arr[this.emptyX][this.emptyY]}`);
+          this.e = document.querySelector(`#cell-${this.arr[i][j]}`);
 
-            //  find where are we moving
-            this.moveAnimation([ i, j ]);
+          //  find where are we moving
+          this.moveAnimation([ i, j ]);
 
-            this.playSlideSound();
+          this.playSlideSound();
 
-            setTimeout(() => {
-              const temp = zero.style.order;
-              zero.style.order = this.e.style.order;
-              this.e.style.order = temp;
+          setTimeout(() => {
+            [zero.style.order, this.e.style.order] = [this.e.style.order, zero.style.order];
 
-              this.e.style.transform = '';
 
-              if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
-                if (this.checkWin()) {
-                  this.timerC.timerPause();
-                }
+            this.e.style.transform = '';
+
+            if (this.emptyX === this.emptyY && this.emptyY === this.size - 1) {
+              if (this.checkWin()) {
+                this.timerC.timerPause();
               }
-            }, this.animationTime);
-            [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
-              this.arr[this.emptyX][this.emptyY],
-              this.arr[i][j]
-            ];
-            this.emptyX = i;
-            this.emptyY = j;
+            }
+          }, this.animationTime);
+          [ this.arr[i][j], this.arr[this.emptyX][this.emptyY] ] = [
+            this.arr[this.emptyX][this.emptyY],
+            this.arr[i][j]
+          ];
+          this.emptyX = i;
+          this.emptyY = j;
 
-            this.checkForIdling();
-            this.history.push([ this.emptyX, this.emptyY ]);
-            return;
-          }
+          this.checkForIdling();
+          this.history.push([ this.emptyX, this.emptyY ]);
+          return;
         }
       }
     }
