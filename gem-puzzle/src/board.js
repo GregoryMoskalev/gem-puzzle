@@ -87,7 +87,10 @@ export default class Board {
         this.moveAnimation([ x, y ]);
 
         setTimeout(() => {
-          [this.arr[this.emptyX][this.emptyY], this.arr[x][y]] = [this.arr[x][y], this.arr[this.emptyX][this.emptyY]];
+          [ this.arr[this.emptyX][this.emptyY], this.arr[x][y] ] = [
+            this.arr[x][y],
+            this.arr[this.emptyX][this.emptyY]
+          ];
           this.emptyX = x;
           this.emptyY = y;
           this.removeBoard();
@@ -216,22 +219,24 @@ export default class Board {
   renderBoard() {
     let board = `<div class="score-list">test</div>`;
     const boardWidth = `${this.boardWidth}rem`;
-    let cellNumber;
 
     for (let i = 0, order = 1; i < this.size; i += 1) {
       for (let j = 0; j < this.size; j += 1) {
-        cellNumber = this.arr[i][j];
+        const cellNumber = this.arr[i][j];
+        let className = 'cell empty';
+        let draggable = false;
+        let preventDef = "ondragover = 'event.preventDefault()'";
+        let bgForCell = '';
 
-        const className = cellNumber ? 'cell' : 'cell empty';
+        if(cellNumber) {
+          const bGpos = this.bgPosArr[cellNumber - 1];
+          className = 'cell';
+          draggable = true;
+          preventDef = '';
+          bgForCell = `background: url(./assets/images/${this
+            .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
+        }
 
-        const draggable = !!cellNumber;
-
-        const preventDef = !cellNumber ? "ondragover = 'event.preventDefault()'" : '';
-        const bGpos = this.bgPosArr[cellNumber - 1];
-        const bgForCell = cellNumber
-          ? `background: url(./assets/images/${this
-              .imgNumb}.jpg); background-position: ${bGpos}; background-size: ${boardWidth};`
-          : '';
         order += 1;
 
         board += `<div 
