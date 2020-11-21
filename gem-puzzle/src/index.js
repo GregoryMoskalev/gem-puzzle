@@ -95,7 +95,7 @@ document.querySelector('.sound').addEventListener('click', (evt) => {
 });
 
 document.querySelector('.score').addEventListener('click', (evt) => {
-  board.getScoreList();
+  board.renderScoreList();
   if (board.scoreList) {
     evt.target.classList.add('btn-on');
   } else {

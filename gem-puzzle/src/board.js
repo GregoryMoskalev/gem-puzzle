@@ -52,6 +52,26 @@ export default class Board {
         e.disabled = !e.disabled;
       });
     };
+    this.dragdropHandler = () => {
+      document.querySelectorAll('.cell').forEach((cell) => {
+        cell.addEventListener('mouseup', (evt) => {
+          const elem = evt.target;
+          this.swap(parseInt(elem.innerHTML, 10));
+        });
+  
+        cell.addEventListener('dragstart', this.dragStart);
+  
+        cell.addEventListener('dragover', this.dragOver);
+  
+        cell.addEventListener('drop', this.dragDrop);
+  
+        cell.addEventListener('dragend', this.dragEnd);
+  
+        cell.addEventListener('dragenter', this.dragEnter);
+  
+        cell.addEventListener('dragleave', this.dragLeave);
+      });
+    }
   }
 
   randomImgNumber(max, min) {
@@ -370,8 +390,8 @@ export default class Board {
     localStorage.setItem('score-list', JSON.stringify(scoreList));
   }
 
-  getScoreList() {
-    this.scoreList = !this.scoreList;
+  renderScoreList() {
+    this.isActiveScoreList = !this.isActiveScoreList;
 
     const scoreElem = document.querySelector('.score-list');
     const scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
@@ -383,7 +403,7 @@ export default class Board {
     }
     scoreElem.innerHTML = `<h2>Best Scores</h2>
       <ol class="score">${list}</ol>`;
-    if (this.scoreList) {
+    if (this.isActiveScoreList) {
       scoreElem.classList.add('score-list-on');
       this.timerC.timerPause();
     } else {
@@ -459,7 +479,7 @@ export default class Board {
   }
 
   init() {
-    this.scoreList = false;
+    this.isActiveScoreList = false;
     this.randomImgNumber(150, 1);
     this.history = [];
     this.movesCounter = 0;
@@ -481,24 +501,7 @@ export default class Board {
     this.renderBoard();
     this.timerC.init();
 
-    document.querySelectorAll('.cell').forEach((cell) => {
-      cell.addEventListener('mouseup', (evt) => {
-        const elem = evt.target;
-        this.swap(parseInt(elem.innerHTML, 10));
-      });
-
-      cell.addEventListener('dragstart', this.dragStart);
-
-      cell.addEventListener('dragover', this.dragOver);
-
-      cell.addEventListener('drop', this.dragDrop);
-
-      cell.addEventListener('dragend', this.dragEnd);
-
-      cell.addEventListener('dragenter', this.dragEnter);
-
-      cell.addEventListener('dragleave', this.dragLeave);
-    });
+    this.dragdropHandler();
   }
 
   load() {
@@ -509,23 +512,7 @@ export default class Board {
     this.win = this.createBoard();
     this.timerC.load();
 
-    document.querySelectorAll('.cell').forEach((cell) => {
-      cell.addEventListener('mouseup', (evt) => {
-        const elem = evt.target;
-        this.swap(parseInt(elem.innerHTML, 10));
-      });
 
-      cell.addEventListener('dragstart', this.dragStart);
-
-      cell.addEventListener('dragover', this.dragOver);
-
-      cell.addEventListener('drop', this.dragDrop);
-
-      cell.addEventListener('dragend', this.dragEnd);
-
-      cell.addEventListener('dragenter', this.dragEnter);
-
-      cell.addEventListener('dragleave', this.dragLeave);
-    });
+    this.dragdropHandler();
   }
 }
