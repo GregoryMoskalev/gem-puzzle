@@ -58,20 +58,20 @@ export default class Board {
           const elem = evt.target;
           this.swap(parseInt(elem.innerHTML, 10));
         });
-  
+
         cell.addEventListener('dragstart', this.dragStart);
-  
+
         cell.addEventListener('dragover', this.dragOver);
-  
+
         cell.addEventListener('drop', this.dragDrop);
-  
+
         cell.addEventListener('dragend', this.dragEnd);
-  
+
         cell.addEventListener('dragenter', this.dragEnter);
-  
+
         cell.addEventListener('dragleave', this.dragLeave);
       });
-    }
+    };
   }
 
   toggleSound() {
@@ -157,8 +157,6 @@ export default class Board {
       this.history.splice(-2, 2);
     }
   }
-
-
 
   move(direction) {
     switch (direction) {
@@ -314,10 +312,8 @@ export default class Board {
     document.body.appendChild(element);
   }
 
-
-
   moveAnimation([ x, y ]) {
-    this.direction = this.getDirection(x, y)
+    this.direction = this.getDirection(x, y);
     this.inAnimation = true;
     this.start = Date.now();
 
@@ -336,17 +332,17 @@ export default class Board {
 
   getDirection(x, y) {
     if (this.emptyX < x) {
-        return 'up';
+      return 'up';
     }
-  
+
     if (this.emptyX > x) {
       return 'down';
     }
-  
+
     if (this.emptyY < y) {
-        return 'left';
+      return 'left';
     }
-  
+
     return 'right';
   }
 
@@ -370,7 +366,6 @@ export default class Board {
     }
   }
 
-
   swap(cellNumb) {
     if (this.inAnimation) return;
 
@@ -389,8 +384,7 @@ export default class Board {
           this.playSlideSound();
 
           setTimeout(() => {
-            [zero.style.order, this.e.style.order] = [this.e.style.order, zero.style.order];
-
+            [ zero.style.order, this.e.style.order ] = [ this.e.style.order, zero.style.order ];
 
             this.e.style.transform = '';
 
@@ -426,7 +420,7 @@ export default class Board {
       (Math.abs(this.emptyY - y) === 1 && this.emptyX - x === 0)
     );
   }
-  
+
   renderScoreList() {
     this.isActiveScoreList = !this.isActiveScoreList;
 
@@ -443,10 +437,21 @@ export default class Board {
     if (this.isActiveScoreList) {
       scoreElem.classList.add('score-list-on');
       this.timerC.timerPause();
+      this.closeScore();
     } else {
       scoreElem.classList.remove('score-list-on');
       this.timerC.calcCurrentTime();
     }
+  }
+
+  closeScore(){
+    document.querySelectorAll('.btn:not(.score, .sound),#fieldSize').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelector('.score-list').classList.remove('score-list-on');
+        document.querySelector('.score').classList.remove('btn-on');
+        this.isActiveScoreList = false;
+      });
+    });
   }
 
   checkWin(cheat) {
@@ -483,7 +488,8 @@ export default class Board {
     this.winBoard.innerHTML += `<div style="background-image: url(./assets/images/${this
       .imgNumb}.jpg);" class='win-text'>${cheat
       ? 'ЧИТЕР!'
-      : `Ура! Вы решили головоломку за ${this.timerC.timer} и ${this.movesCounter} ходов</div>`}</div>`;
+      : `Ура! Вы решили головоломку за ${this.timerC.timer} и ${this
+          .movesCounter} ходов</div>`}</div>`;
     setTimeout(() => {
       this.winBoard.querySelector('.win-text').style.opacity = 1;
     }, 50);
@@ -524,11 +530,10 @@ export default class Board {
     this.win = this.createBoard();
     this.timerC.load();
 
-
     this.dragdropHandler();
   }
 
-  setFieldSizeInSelector(){
+  setFieldSizeInSelector() {
     document.querySelector('#fieldSize').options.selectedIndex = this.size - 2;
   }
 }
