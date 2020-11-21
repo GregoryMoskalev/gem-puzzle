@@ -435,8 +435,7 @@ export default class Board {
     this.winBoard.innerHTML += `<div style="background-image: url(./assets/images/${this
       .imgNumb}.jpg);" class='win-text'>${cheat
       ? 'ЧИТЕР!'
-      : `Ура! Вы решили головоломку за ${document.querySelector('.time')
-          .innerHTML} и ${document.querySelector('.move').innerHTML} ходов</div>`}</div>`;
+      : `Ура! Вы решили головоломку за ${this.timerC.timer} и ${this.movesCounter} ходов</div>`}</div>`;
     setTimeout(() => {
       this.winBoard.querySelector('.win-text').style.opacity = 1;
     }, 50);
