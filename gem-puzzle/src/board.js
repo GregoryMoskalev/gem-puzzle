@@ -87,9 +87,7 @@ export default class Board {
         this.moveAnimation([ x, y ]);
 
         setTimeout(() => {
-          const temp = this.arr[this.emptyX][this.emptyY];
-          this.arr[this.emptyX][this.emptyY] = this.arr[x][y];
-          this.arr[x][y] = temp;
+          [this.arr[this.emptyX][this.emptyY], this.arr[x][y]] = [this.arr[x][y], this.arr[this.emptyX][this.emptyY]];
           this.emptyX = x;
           this.emptyY = y;
           this.removeBoard();
