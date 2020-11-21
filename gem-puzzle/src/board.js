@@ -315,12 +315,12 @@ export default class Board {
     this.soundOn = !this.soundOn;
   }
 
-  swap(number) {
+  swap(cellNumb) {
     if (this.inAnimation) return;
 
     for (let i = 0; i < this.arr.length; i += 1) {
       for (let j = 0; j < this.arr[i].length; j += 1) {
-        if (this.arr[i][j] === number && this.isNearZero(i, j)) {
+        if (this.arr[i][j] === cellNumb && this.isNearZero(i, j)) {
           // Move counter
           this.addMove();
 
