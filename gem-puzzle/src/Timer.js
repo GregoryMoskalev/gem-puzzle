@@ -13,7 +13,7 @@ export default class Timer {
   secToMinAndSec() {
     const minutes = Math.floor(this.currentTime / 60);
     const sec = (this.currentTime % 60).toFixed(0);
-    
+
     this.timer = `${minutes}:${sec < 10 ? '0' : ''}${sec}`;
     this.renderTimer();
   }
@@ -41,7 +41,6 @@ export default class Timer {
   load() {
     this.timerStop();
     this.secToMinAndSec();
-    this.renderTimer();
 
     this.calcCurrentTime();
   }
