@@ -73,7 +73,9 @@ export default class Board {
 
   checkForIdling() {
     const [ blX, blY ] = this.history[this.history.length - 2];
-    if (this.emptyX === blX && this.emptyY === blY) this.history.splice(-2, 2);
+    if (this.emptyX === blX && this.emptyY === blY) {
+      this.history.splice(-2, 2);
+    }
   }
 
   backTimer() {
