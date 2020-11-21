@@ -304,17 +304,25 @@ export default class Board {
     }
   }
 
-  moveAnimation([ x, y ]) {
-    if (this.emptyX < x) {
-      this.direction = 'up';
-    } else if (this.emptyX > x) {
-      this.direction = 'down';
-    } else if (this.emptyY < y) {
-      this.direction = 'left';
-    } else if (this.emptyY > y) {
-      this.direction = 'right';
-    }
 
+  getDirection(x, y) {
+    if (this.emptyX < x) {
+        return 'up';
+    }
+  
+    if (this.emptyX > x) {
+      return 'down';
+    }
+  
+    if (this.emptyY < y) {
+        return 'left';
+    }
+  
+    return 'right';
+  }
+
+  moveAnimation([ x, y ]) {
+    this.direction = this.getDirection(x, y)
     this.inAnimation = true;
     this.start = Date.now();
 
@@ -390,7 +398,9 @@ export default class Board {
     localStorage.setItem('score-list', JSON.stringify(scoreList));
   }
 
+  
   renderScoreList() {
+    this.toggleScoreList();
     this.isActiveScoreList = !this.isActiveScoreList;
 
     const scoreElem = document.querySelector('.score-list');
