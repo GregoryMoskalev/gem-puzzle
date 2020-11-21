@@ -14,13 +14,18 @@ export default class Timer {
     const minutes = Math.floor(this.currentTime / 60);
     const sec = (this.currentTime % 60).toFixed(0);
 
-    this.timer = `${minutes}:${sec < 10 ? '0' : ''}${sec}`;
-    this.renderTimer();
+    this.updateTimer(`${minutes}:${sec < 10 ? '0' : ''}${sec}`);
+
   }
 
   timerStop() {
     clearInterval(this.time);
-    this.timer = '0:00';
+    this.updateTimer('0:00');
+  }
+
+  updateTimer(newTimeValue) {
+    this.timer = newTimeValue;
+    document.querySelector('.time').innerHTML = newTimeValue;
     this.renderTimer();
   }
 
