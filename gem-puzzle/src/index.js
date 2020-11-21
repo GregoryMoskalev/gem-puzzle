@@ -1,4 +1,4 @@
-import Board from './Board.js';
+import Board from './board.js';
 
 const board = new Board();
 
@@ -96,7 +96,7 @@ document.querySelector('.sound').addEventListener('click', (evt) => {
 
 document.querySelector('.score').addEventListener('click', (evt) => {
   board.renderScoreList();
-  if (board.scoreList) {
+  if (board.isActiveScoreList) {
     evt.target.classList.add('btn-on');
   } else {
     evt.target.classList.remove('btn-on');
