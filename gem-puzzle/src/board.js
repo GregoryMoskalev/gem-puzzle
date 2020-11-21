@@ -74,6 +74,34 @@ export default class Board {
     }
   }
 
+  toggleSound() {
+    this.soundOn = !this.soundOn;
+  }
+
+  playDragSound() {
+    if (!this.soundOn) return;
+    this.dragNDropSound.currentTime = 0.15;
+    this.dragNDropSound.play();
+  }
+
+  dragStart() {
+    setTimeout(() => {
+      this.classList.add('hide');
+    }, 0);
+  }
+
+  dragEnd() {
+    this.classList.remove('hide');
+  }
+
+  dragEnter() {
+    this.classList.add('hovered');
+  }
+
+  dragLeave() {
+    this.classList.remove('hovered');
+  }
+
   randomImgNumber(max, min) {
     this.imgNumb = Math.floor(Math.random() * (max - min) + min);
   }
@@ -82,20 +110,6 @@ export default class Board {
     this.toggleButtons();
     this.history.pop();
     this.backTimer();
-  }
-
-  isNearZero(x, y) {
-    return (
-      (Math.abs(this.emptyX - x) === 1 && this.emptyY - y === 0) ||
-      (Math.abs(this.emptyY - y) === 1 && this.emptyX - x === 0)
-    );
-  }
-
-  checkForIdling() {
-    const [ blX, blY ] = this.history[this.history.length - 2];
-    if (this.emptyX === blX && this.emptyY === blY) {
-      this.history.splice(-2, 2);
-    }
   }
 
   backTimer() {
@@ -124,6 +138,27 @@ export default class Board {
       }
     }, this.animationTime);
   }
+
+  playWinSound() {
+    if (!this.soundOn) return;
+    this.winSound.currentTime = 0;
+    this.winSound.play();
+  }
+
+  playSlideSound() {
+    if (!this.soundOn) return;
+    this.slideSound.currentTime = 0;
+    this.slideSound.play();
+  }
+
+  checkForIdling() {
+    const [ blX, blY ] = this.history[this.history.length - 2];
+    if (this.emptyX === blX && this.emptyY === blY) {
+      this.history.splice(-2, 2);
+    }
+  }
+
+
 
   move(direction) {
     switch (direction) {
@@ -279,9 +314,40 @@ export default class Board {
     document.body.appendChild(element);
   }
 
-  addMove() {
-    this.movesCounter += 1;
-    document.querySelector('.move').innerHTML = this.movesCounter;
+
+
+  moveAnimation([ x, y ]) {
+    this.direction = this.getDirection(x, y)
+    this.inAnimation = true;
+    this.start = Date.now();
+
+    this.timer = setInterval(() => {
+      this.timePassed = Date.now() - this.start;
+
+      if (this.timePassed >= this.animationTime) {
+        clearInterval(this.timer);
+        this.inAnimation = false;
+        return;
+      }
+
+      this.draw();
+    }, 20);
+  }
+
+  getDirection(x, y) {
+    if (this.emptyX < x) {
+        return 'up';
+    }
+  
+    if (this.emptyX > x) {
+      return 'down';
+    }
+  
+    if (this.emptyY < y) {
+        return 'left';
+    }
+  
+    return 'right';
   }
 
   draw() {
@@ -304,44 +370,6 @@ export default class Board {
     }
   }
 
-
-  getDirection(x, y) {
-    if (this.emptyX < x) {
-        return 'up';
-    }
-  
-    if (this.emptyX > x) {
-      return 'down';
-    }
-  
-    if (this.emptyY < y) {
-        return 'left';
-    }
-  
-    return 'right';
-  }
-
-  moveAnimation([ x, y ]) {
-    this.direction = this.getDirection(x, y)
-    this.inAnimation = true;
-    this.start = Date.now();
-
-    this.timer = setInterval(() => {
-      this.timePassed = Date.now() - this.start;
-
-      if (this.timePassed >= this.animationTime) {
-        clearInterval(this.timer);
-        this.inAnimation = false;
-        return;
-      }
-
-      this.draw();
-    }, 20);
-  }
-
-  toggleSound() {
-    this.soundOn = !this.soundOn;
-  }
 
   swap(cellNumb) {
     if (this.inAnimation) return;
@@ -387,20 +415,19 @@ export default class Board {
     }
   }
 
-  setScore() {
-    let scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
-    scoreList.push({ moves: this.movesCounter, size: this.size, time: this.timerC.timer });
-    scoreList.sort((a, b) => {
-      return a.moves - b.moves;
-    });
-    scoreList = scoreList.slice(0, 10);
-
-    localStorage.setItem('score-list', JSON.stringify(scoreList));
+  addMove() {
+    this.movesCounter += 1;
+    document.querySelector('.move').innerHTML = this.movesCounter;
   }
 
+  isNearZero(x, y) {
+    return (
+      (Math.abs(this.emptyX - x) === 1 && this.emptyY - y === 0) ||
+      (Math.abs(this.emptyY - y) === 1 && this.emptyX - x === 0)
+    );
+  }
   
   renderScoreList() {
-    this.toggleScoreList();
     this.isActiveScoreList = !this.isActiveScoreList;
 
     const scoreElem = document.querySelector('.score-list');
@@ -438,6 +465,17 @@ export default class Board {
     return true;
   }
 
+  setScore() {
+    let scoreList = JSON.parse(localStorage.getItem('score-list')) || [];
+    scoreList.push({ moves: this.movesCounter, size: this.size, time: this.timerC.timer });
+    scoreList.sort((a, b) => {
+      return a.moves - b.moves;
+    });
+    scoreList = scoreList.slice(0, 10);
+
+    localStorage.setItem('score-list', JSON.stringify(scoreList));
+  }
+
   setWinMessage(cheat) {
     this.winBoard = document.querySelector('.board');
     this.winBoard.classList.add('win');
@@ -449,42 +487,6 @@ export default class Board {
     setTimeout(() => {
       this.winBoard.querySelector('.win-text').style.opacity = 1;
     }, 50);
-  }
-
-  playWinSound() {
-    if (!this.soundOn) return;
-    this.winSound.currentTime = 0;
-    this.winSound.play();
-  }
-
-  playSlideSound() {
-    if (!this.soundOn) return;
-    this.slideSound.currentTime = 0;
-    this.slideSound.play();
-  }
-
-  playDragSound() {
-    if (!this.soundOn) return;
-    this.dragNDropSound.currentTime = 0.15;
-    this.dragNDropSound.play();
-  }
-
-  dragStart() {
-    setTimeout(() => {
-      this.classList.add('hide');
-    }, 0);
-  }
-
-  dragEnd() {
-    this.classList.remove('hide');
-  }
-
-  dragEnter() {
-    this.classList.add('hovered');
-  }
-
-  dragLeave() {
-    this.classList.remove('hovered');
   }
 
   init() {
