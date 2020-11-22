@@ -10,11 +10,17 @@ document.body.appendChild(header);
 const menu = document.createElement('div');
 menu.classList.add('menu');
 
+let loadBtnProperties = '';
+
+
+if(!(localStorage.getItem('gameSave'))) {
+  loadBtnProperties = `disabled title="Can't load game"`
+}
 menu.innerHTML = `  
   <div class="settings">
     <button class="new-game btn">New</button>
     <button class="save btn">Save</button>
-    <button class="load btn">Load</button>
+    <button class="load btn" ${loadBtnProperties}>Load</button>
     <button class="score btn">Score</button>
     <button class="sound btn ${board.soundOn ? 'btn-on' : ''}">Sound</button>
     <div class="size">
@@ -36,6 +42,8 @@ menu.innerHTML = `
   </div>`;
 
 document.body.appendChild(menu);
+const loadBtn = document.querySelector('.load');
+
 
 board.init();
 
@@ -44,6 +52,8 @@ document.querySelector('.new-game').addEventListener('click', () => {
 });
 
 document.querySelector('.save').addEventListener('click', () => {
+  loadBtn.disabled = false;
+  loadBtn.title = '';
   localStorage.setItem(
     'gameSave',
     JSON.stringify({
@@ -59,7 +69,7 @@ document.querySelector('.save').addEventListener('click', () => {
   );
 });
 
-document.querySelector('.load').addEventListener('click', () => {
+loadBtn.addEventListener('click', () => {
   const { bgPosition, history, size, boardTable, time, moves, zero, imgNumb } = JSON.parse(
     localStorage.getItem('gameSave')
   );
