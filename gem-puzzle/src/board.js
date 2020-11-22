@@ -118,9 +118,7 @@ export default class Board {
         const [ x, y ] = this.history.pop();
         this.e = document.querySelector(`#cell-${this.arr[x][y]}`);
 
-        this.moveAnimation([ x, y ]);
-
-        setTimeout(() => {
+        this.moveAnimation([ x, y ], () => {
           [ this.arr[this.emptyX][this.emptyY], this.arr[x][y] ] = [
             this.arr[x][y],
             this.arr[this.emptyX][this.emptyY]
@@ -131,7 +129,8 @@ export default class Board {
           this.renderBoard();
           this.playSlideSound();
           this.backTimer();
-        }, this.animationTime);
+        })
+
       } else {
         this.checkWin(true);
         this.toggleButtons();
@@ -312,7 +311,7 @@ export default class Board {
     document.body.appendChild(element);
   }
 
-  moveAnimation([ x, y ]) {
+  moveAnimation([ x, y ], callback=false) {
     this.direction = this.getDirection(x, y);
     this.inAnimation = true;
     this.start = Date.now();
@@ -321,6 +320,10 @@ export default class Board {
       this.timePassed = Date.now() - this.start;
 
       if (this.timePassed >= this.animationTime) {
+        if(callback){
+          callback()
+        }
+
         clearInterval(this.timer);
         this.inAnimation = false;
         return;
@@ -328,6 +331,9 @@ export default class Board {
 
       this.draw();
     }, 20);
+
+
+
   }
 
   getDirection(x, y) {
